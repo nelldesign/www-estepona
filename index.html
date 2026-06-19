@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Náš druhý domov · Estepona</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<style>
+/* ─────────────────────────────── VARIABLES ─── */
+:root{
+  --cream:#f7f3ee; --beige:#e8dfd3; --sand:#d4c4b0;
+  --sage:#8fba85; --olive:#5c7a52; --olive-d:#3e5738; --olive-l:#b0caa8;
+  --gold:#c8a04a; --gold-l:#e8c87a; --gold-d:#a07830;
+  --brown:#7a6752; --text:#3a3530; --text-l:#6b5e52; --white:#fff;
+  --nav-h:70px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;font-weight:300;color:var(--text);background:var(--cream);font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+img{display:block;width:100%;object-fit:cover}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:400;line-height:1.15}
+.script{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;letter-spacing:.03em}
+.serif{font-family:'Cormorant Garamond',serif}
+
+/* ─────────────────────────────── NAV ─── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  height:var(--nav-h);padding:0 2.5rem;
+  background:rgba(247,243,238,.94);backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(92,122,82,.1);
+  transition:box-shadow .3s
+}
+#nav.scrolled{box-shadow:0 2px 24px rgba(0,0,0,.07)}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;font-size:1.1rem;
+  letter-spacing:.06em;color:var(--olive-d);white-space:nowrap;
+  display:flex;align-items:center;gap:.5rem
+}
+.nav-logo svg{width:18px;height:18px;flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:1.8rem}
+.nav-links a{
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-l);transition:color .2s;white-space:nowrap
+}
+.nav-links a:hover,.nav-links a.active{color:var(--gold)}
+.nav-btn{
+  padding:.45rem 1.1rem;border:1px solid var(--gold);
+  border-radius:2rem;color:var(--gold)!important;
+  transition:all .2s
+}
+.nav-btn:hover{background:var(--gold);color:var(--white)!important}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:22px;height:1.5px;background:var(--text);transition:all .3s}
+
+/* mobile nav overlay */
+.mobile-nav{
+  display:none;position:fixed;inset:0;z-index:800;
+  background:var(--cream);flex-direction:column;
+  align-items:center;justify-content:center;gap:2.5rem;
+  padding:2rem
+}
+.mobile-nav.open{display:flex}
+.mobile-nav a{
+  font-family:'Cormorant Garamond',serif;font-size:2rem;
+  color:var(--text);transition:color .2s
+}
+.mobile-nav a:hover{color:var(--olive)}
+.mobile-nav .close-btn{
+  position:absolute;top:1.5rem;right:2rem;
+  font-size:2rem;cursor:pointer;color:var(--text-l)
+}
+
+/* ─────────────────────────────── HERO ─── */
+#domov{
+  position:relative;height:100vh;min-height:640px;
+  display:flex;align-items:flex-end;overflow:hidden
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:url('hero.jpg') 40% 40%/cover no-repeat,
+    linear-gradient(135deg,#f0ebe4 0%,#e8dfd3 100%);
+  /* Profi photo grade: brighter, softer contrast, warm whites */
+  filter:brightness(1.18) contrast(.9) saturate(.85) sepia(.04);
+}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(to right,
+      rgba(247,243,238,.95) 0%,
+      rgba(247,243,238,.75) 38%,
+      rgba(247,243,238,.2) 62%,
+      transparent 80%
+    ),
+    linear-gradient(to top,
+      rgba(247,243,238,.75) 0%,
+      rgba(247,243,238,.2) 30%,
+      transparent 52%
+    )
+}
+.hero-content{
+  position:relative;z-index:2;
+  padding:2rem 4rem 4rem;max-width:820px
+}
+.hero-eyebrow{
+  font-size:.68rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1rem;
+  display:flex;align-items:center;gap:1rem
+}
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--gold);display:block}
+.hero-h1{
+  font-size:clamp(2.4rem,5.5vw,4.2rem);
+  color:var(--olive-d);margin-bottom:.5rem;
+  font-weight:300;letter-spacing:-.01em
+}
+.hero-script{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+  font-size:clamp(1.3rem,3vw,2.1rem);
+  color:var(--text-l);display:block;margin-bottom:2.5rem;
+  letter-spacing:.02em
+}
+.hero-gold-line{
+  width:48px;height:1.5px;background:var(--gold);
+  margin-bottom:2rem;opacity:.7
+}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-host{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.8rem 1.8rem;background:var(--olive-d);color:var(--white);
+  border-radius:2rem;font-size:.78rem;letter-spacing:.12em;
+  text-transform:uppercase;transition:all .25s;border:none;cursor:pointer
+}
+.btn-host:hover{background:var(--gold);color:var(--white);transform:translateY(-2px)}
+.btn-host svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.8rem 1.8rem;border:1.5px solid var(--gold);
+  color:var(--gold-d);border-radius:2rem;font-size:.78rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  transition:all .25s;background:transparent;cursor:pointer
+}
+.btn-outline:hover{background:var(--gold);color:var(--white);border-color:var(--gold)}
+.hero-scroll{
+  position:absolute;bottom:2.5rem;right:3rem;z-index:2;
+  display:flex;align-items:center;gap:.7rem;
+  color:var(--text-l);opacity:.7;font-size:.65rem;
+  letter-spacing:.18em;text-transform:uppercase
+}
+.hero-scroll::before{content:'';width:36px;height:1px;background:var(--sand);display:block}
+
+/* ─────────────────────────────── SECTION BASE ─── */
+section{padding:6rem 0}
+.container{max-width:1160px;margin:0 auto;padding:0 2rem}
+.sec-label{
+  font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.8rem;
+  display:flex;align-items:center;gap:1rem
+}
+.sec-label::after{content:'';flex:0 0 36px;height:1px;background:var(--gold-l)}
+.sec-label.center{justify-content:center}
+.sec-label.center::after{display:none}
+.sec-h2{font-size:clamp(2rem,4.5vw,3.5rem);color:var(--olive-d);margin-bottom:.25rem}
+.sec-script{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+  font-size:clamp(1.1rem,2.5vw,1.5rem);
+  color:var(--text-l);display:block;margin-bottom:2.5rem;letter-spacing:.02em
+}
+
+/* ─────────────────────────────── O APARTMÁNU ─── */
+#apartman{background:var(--white)}
+.apart-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.apart-imgs{
+  display:grid;grid-template-columns:1fr 1fr;gap:.6rem;
+  grid-template-rows:auto auto
+}
+.apart-imgs .big{grid-column:1/3}
+.apart-img-ph{
+  background:linear-gradient(135deg,var(--beige),var(--sand));
+  border-radius:3px;
+}
+.apart-img-ph.tall{aspect-ratio:16/9}
+.apart-img-ph.sq{aspect-ratio:1}
+.apart-img-ph img{border-radius:3px;aspect-ratio:inherit}
+.apart-features{
+  display:flex;flex-wrap:wrap;gap:.5rem;margin:2rem 0
+}
+.feat-tag{
+  font-size:.75rem;letter-spacing:.06em;
+  padding:.35rem .9rem;background:var(--cream);
+  border-radius:2rem;color:var(--text-l);
+  border:1px solid var(--beige)
+}
+.apart-text p{color:var(--text-l);margin-bottom:1rem}
+
+/* ─────────────────────────────── JAK SE DOSTAT ─── */
+#jak-se-dostat{background:var(--cream)}
+.dostat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-top:3rem}
+.dostat-card{
+  background:var(--white);border-radius:6px;
+  padding:2rem;transition:box-shadow .25s
+}
+.dostat-card:hover{box-shadow:0 8px 32px rgba(0,0,0,.07)}
+.dostat-icon{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--olive);display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.2rem
+}
+.dostat-icon svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:1.5}
+.dostat-card h3{
+  font-family:'Cormorant Garamond',serif;font-size:1.4rem;
+  color:var(--olive-d);margin-bottom:.8rem
+}
+.dostat-card p,.dostat-card li{font-size:.93rem;color:var(--text-l);margin-bottom:.4rem}
+.dostat-card ul{padding-left:0}
+.dostat-card li::before{content:'→ ';color:var(--olive)}
+.dostat-card .price-row{
+  display:flex;justify-content:space-between;
+  padding:.5rem 0;border-bottom:1px solid var(--beige);
+  font-size:.9rem;color:var(--text-l)
+}
+.dostat-card .price-row:last-child{border-bottom:none}
+.dostat-card .price-row strong{color:var(--text);font-weight:500}
+.nav-btns{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.5rem}
+.map-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.55rem 1.1rem;border:1px solid var(--sand);
+  border-radius:2rem;font-size:.8rem;letter-spacing:.05em;
+  color:var(--text-l);transition:all .2s
+}
+.map-btn:hover{border-color:var(--olive);color:var(--olive)}
+.map-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5}
+.rent-list{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .8rem;margin-top:.8rem}
+.rent-item{
+  font-size:.82rem;color:var(--text-l);
+  display:flex;align-items:center;gap:.5rem
+}
+.rent-item::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--olive-l);flex-shrink:0
+}
+.dostat-note{
+  font-size:.8rem;color:var(--text-l);font-style:italic;
+  margin-top:1rem;padding:.8rem 1rem;
+  background:var(--cream);border-radius:4px
+}
+
+/* ─────────────────────────────── MANUÁL ─── */
+#manual{background:var(--white)}
+.manual-intro{text-align:center;margin-bottom:4rem}
+.manual-intro p{max-width:540px;margin:1rem auto 0;color:var(--text-l)}
+.manual-group{margin-bottom:2.5rem}
+.manual-group-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.1rem;
+  color:var(--olive);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:.8rem;padding-bottom:.5rem;
+  border-bottom:1px solid var(--beige)
+}
+.manual-cards{display:flex;flex-direction:column;gap:.5rem}
+.manual-card{
+  background:var(--cream);border-radius:5px;overflow:hidden;cursor:pointer;
+  transition:box-shadow .2s
+}
+.manual-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.mc-header{
+  display:flex;align-items:center;gap:1rem;
+  padding:1.2rem 1.5rem
+}
+.mc-icon{
+  width:40px;height:40px;border-radius:50%;background:var(--olive);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.mc-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.5}
+.mc-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--olive-d)
+}
+.mc-sub{font-size:.78rem;color:var(--text-l);margin-top:.1rem}
+.mc-toggle{
+  margin-left:auto;width:28px;height:28px;border-radius:50%;
+  border:1.5px solid var(--sand);display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;transition:all .3s
+}
+.mc-toggle svg{transition:transform .3s;stroke:var(--text-l);fill:none;stroke-width:2}
+.manual-card.open .mc-toggle{background:var(--olive);border-color:var(--olive)}
+.manual-card.open .mc-toggle svg{transform:rotate(180deg);stroke:#fff}
+.mc-body{
+  max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;
+  padding:0 1.5rem
+}
+.manual-card.open .mc-body{max-height:900px;padding:0 1.5rem 1.5rem}
+.mc-body p{color:var(--text-l);font-size:.93rem;margin-bottom:.7rem}
+.mc-body ul{padding-left:0;margin-bottom:.7rem}
+.mc-body ul li{
+  color:var(--text-l);font-size:.93rem;margin-bottom:.4rem;
+  padding-left:1.2rem;position:relative
+}
+.mc-body ul li::before{
+  content:'→';position:absolute;left:0;color:var(--olive);font-size:.8rem
+}
+.mc-body strong{color:var(--text);font-weight:500}
+.mc-note{
+  background:rgba(92,122,82,.08);border-left:3px solid var(--olive);
+  padding:.8rem 1rem;border-radius:0 4px 4px 0;
+  font-size:.88rem;color:var(--olive-d);margin-top:.7rem
+}
+.checklist{padding-left:0}
+.checklist li{
+  display:flex;align-items:center;gap:.8rem;
+  padding:.5rem 0;border-bottom:1px solid var(--beige);
+  color:var(--text-l);font-size:.93rem
+}
+.checklist li::before{
+  content:'☐';font-size:1.1rem;color:var(--olive);
+  position:static;padding-left:0
+}
+.manual-addr{
+  text-align:center;margin-top:3rem;padding:2rem;
+  background:var(--cream);border-radius:6px
+}
+.manual-addr .addr{
+  font-family:'Cormorant Garamond',serif;font-size:1.5rem;
+  color:var(--olive-d);margin:.5rem 0
+}
+.manual-addr p{font-size:.9rem;color:var(--text-l)}
+
+/* ─────────────────────────────── KAM NA VÝLET ─── */
+#kam-na-vylet{background:var(--cream)}
+.trip-tabs{
+  display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem
+}
+.trip-tab{
+  padding:.45rem 1.1rem;border:1px solid var(--sand);
+  border-radius:2rem;font-size:.78rem;letter-spacing:.08em;
+  cursor:pointer;color:var(--text-l);transition:all .2s;background:transparent
+}
+.trip-tab:hover,.trip-tab.active{
+  background:var(--olive);border-color:var(--olive);color:var(--white)
+}
+#map{height:460px;border-radius:8px;margin-bottom:2rem;z-index:1}
+.trip-list{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1rem
+}
+.trip-card{
+  background:var(--white);border-radius:6px;overflow:hidden;
+  display:none;transition:box-shadow .2s
+}
+.trip-card.visible{display:block}
+.trip-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.trip-card-img{
+  height:160px;
+  background:linear-gradient(135deg,var(--beige),var(--sand))
+}
+.trip-card-img img{height:100%;object-fit:cover}
+.trip-card-body{padding:1.2rem}
+.trip-card-cat{
+  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--olive);margin-bottom:.4rem
+}
+.trip-card-body h3{
+  font-family:'Cormorant Garamond',serif;font-size:1.2rem;
+  color:var(--olive-d);margin-bottom:.4rem
+}
+.trip-card-body p{font-size:.88rem;color:var(--text-l);margin-bottom:.8rem}
+.trip-meta{
+  display:flex;gap:1rem;font-size:.78rem;color:var(--text-l);
+  margin-bottom:.8rem
+}
+.trip-meta span{display:flex;align-items:center;gap:.3rem}
+.trip-nav{display:flex;gap:.4rem;flex-wrap:wrap}
+.trip-nav a{
+  font-size:.73rem;padding:.35rem .8rem;
+  border:1px solid var(--sand);border-radius:2rem;
+  color:var(--text-l);transition:all .2s
+}
+.trip-nav a:hover{border-color:var(--olive);color:var(--olive)}
+
+/* ─────────────────────────────── OBLÍBENÁ MÍSTA ─── */
+#oblibena-mista{background:var(--white)}
+.favs-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:1.5rem;margin-top:3rem
+}
+.fav-card{background:var(--cream);border-radius:8px;overflow:hidden}
+.fav-card-img{
+  height:200px;
+  background:linear-gradient(135deg,var(--beige),var(--sand))
+}
+.fav-card-img img{height:100%;object-fit:cover}
+.fav-card-body{padding:1.4rem}
+.fav-card-emoji{font-size:1.4rem;margin-bottom:.5rem}
+.fav-card-body h3{
+  font-family:'Cormorant Garamond',serif;font-size:1.2rem;
+  color:var(--olive-d);margin-bottom:.5rem
+}
+.fav-card-body p{font-size:.9rem;color:var(--text-l);margin-bottom:.8rem}
+.fav-tag{
+  display:inline-flex;font-size:.72rem;letter-spacing:.06em;
+  padding:.3rem .7rem;background:var(--white);
+  border-radius:2rem;color:var(--olive);border:1px solid var(--olive-l)
+}
+.fav-card .trip-nav{margin-top:.8rem}
+
+/* ─────────────────────────────── KONTAKTY ─── */
+#kontakty{background:var(--cream)}
+.kontakty-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1rem;margin-top:2rem
+}
+.kontakt-group{background:var(--white);border-radius:8px;padding:1.8rem}
+.kontakt-group-title{
+  font-family:'Cormorant Garamond',serif;font-size:1.2rem;
+  color:var(--olive-d);margin-bottom:1.2rem;
+  padding-bottom:.6rem;border-bottom:1px solid var(--beige)
+}
+.kontakt-item{
+  display:flex;align-items:flex-start;gap:.8rem;
+  padding:.7rem 0;border-bottom:1px solid var(--beige)
+}
+.kontakt-item:last-child{border-bottom:none}
+.kontakt-av{
+  width:36px;height:36px;border-radius:50%;background:var(--beige);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:.9rem;font-weight:500;color:var(--olive-d)
+}
+.kontakt-info{flex:1}
+.kontakt-info strong{display:block;font-size:.9rem;font-weight:500;color:var(--text)}
+.kontakt-info span{display:block;font-size:.8rem;color:var(--text-l);margin-top:.15rem}
+.kontakt-actions{display:flex;gap:.4rem;margin-top:.4rem}
+.kontakt-btn{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.25rem .65rem;border-radius:2rem;font-size:.72rem;
+  border:1px solid var(--sand);color:var(--text-l);transition:all .2s
+}
+.kontakt-btn:hover{border-color:var(--olive);color:var(--olive)}
+.kontakt-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8}
+.emergency-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
+  margin-top:2rem
+}
+.emergency-card{
+  background:var(--olive-d);color:var(--white);
+  border-radius:8px;padding:1.5rem;text-align:center
+}
+.emergency-card .ec-num{
+  font-family:'Cormorant Garamond',serif;font-size:2rem;
+  margin-bottom:.3rem
+}
+.emergency-card .ec-label{font-size:.8rem;opacity:.75;letter-spacing:.08em}
+
+/* ─────────────────────────────── GALERIE ─── */
+#galerie{background:var(--white)}
+.gal-tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2rem}
+.gal-tab{
+  padding:.4rem 1rem;border:1px solid var(--sand);
+  border-radius:2rem;font-size:.78rem;letter-spacing:.06em;
+  cursor:pointer;color:var(--text-l);transition:all .2s;background:transparent
+}
+.gal-tab:hover,.gal-tab.active{
+  background:var(--olive);border-color:var(--olive);color:var(--white)
+}
+.gal-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:.5rem
+}
+.gal-item{
+  overflow:hidden;border-radius:3px;cursor:pointer;
+  background:var(--beige)
+}
+.gal-item img,.gal-item .ph{aspect-ratio:1;object-fit:cover}
+.gal-item .ph{
+  width:100%;aspect-ratio:1;
+  background:linear-gradient(135deg,var(--beige),var(--sand));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--sand);transition:transform .5s
+}
+.gal-item:hover .ph{transform:scale(1.04)}
+.gal-item.wide{grid-column:span 2}
+.gal-item.tall{grid-row:span 2}
+.gal-item.hide{display:none}
+
+/* ─────────────────────────────── POČASÍ ─── */
+.weather-bar{
+  background:var(--olive-d);color:var(--white);
+  padding:1rem 2rem;display:flex;align-items:center;
+  justify-content:center;gap:3rem;flex-wrap:wrap
+}
+.weather-bar .w-item{
+  display:flex;align-items:center;gap:.6rem;font-size:.85rem;opacity:.9
+}
+.weather-bar .w-temp{
+  font-family:'Cormorant Garamond',serif;font-size:1.6rem
+}
+.weather-bar .w-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.6}
+
+/* ─────────────────────────────── JSEM HOST MODAL ─── */
+#host-modal{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(40,35,28,.7);backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;padding:1rem
+}
+#host-modal.open{display:flex}
+.modal-box{
+  background:var(--cream);border-radius:12px;
+  width:100%;max-width:680px;max-height:90vh;overflow-y:auto;
+  position:relative
+}
+.modal-close{
+  position:sticky;top:0;display:flex;justify-content:flex-end;
+  padding:.8rem 1rem;background:var(--cream);z-index:2
+}
+.modal-close button{
+  background:none;border:none;cursor:pointer;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;background:var(--beige);color:var(--text)
+}
+.modal-inner{padding:0 2rem 2.5rem}
+.modal-h{
+  font-family:'Cormorant Garamond',serif;font-size:2rem;
+  color:var(--olive-d);margin-bottom:.3rem
+}
+.modal-sub{font-family:'Dancing Script',cursive;font-size:1.3rem;
+  color:var(--text-l);margin-bottom:2rem;display:block}
+.modal-phases{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2rem}
+.phase-btn{
+  padding:.4rem 1rem;border:1px solid var(--sand);border-radius:2rem;
+  font-size:.78rem;letter-spacing:.06em;cursor:pointer;
+  background:transparent;color:var(--text-l);transition:all .2s
+}
+.phase-btn.active{background:var(--olive);border-color:var(--olive);color:var(--white)}
+.phase-content{display:none}
+.phase-content.active{display:block}
+.phase-step{
+  display:flex;gap:1rem;padding:1rem 0;
+  border-bottom:1px solid var(--beige)
+}
+.phase-step:last-child{border-bottom:none}
+.step-num{
+  width:32px;height:32px;border-radius:50%;background:var(--olive);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:500;flex-shrink:0;margin-top:.1rem
+}
+.step-body strong{display:block;color:var(--text);font-weight:500;margin-bottom:.2rem}
+.step-body p{font-size:.9rem;color:var(--text-l)}
+.step-note{
+  font-size:.83rem;color:var(--olive-d);
+  background:rgba(92,122,82,.08);border-left:3px solid var(--olive);
+  padding:.5rem .8rem;border-radius:0 4px 4px 0;margin-top:.5rem
+}
+
+/* ─────────────────────────────── FOOTER ─── */
+footer{
+  background:var(--text);color:rgba(255,255,255,.45);
+  padding:3rem 2rem;text-align:center
+}
+.footer-logo{
+  font-family:'Cormorant Garamond',serif;font-size:1.6rem;
+  color:rgba(255,255,255,.8);margin-bottom:.5rem
+}
+footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
+
+/* ─────────────────────────────── RESPONSIVE ─── */
+
+/* Tablet landscape */
+@media(max-width:1100px){
+  .dostat-grid{grid-template-columns:1fr 1fr}
+  .apart-grid{grid-template-columns:1fr;gap:2.5rem}
+  .apart-imgs{max-width:600px}
+  .emergency-grid{grid-template-columns:repeat(2,1fr)}
+  .kontakty-grid{grid-template-columns:1fr 1fr}
+  .favs-grid{grid-template-columns:1fr 1fr}
+}
+
+/* Tablet portrait */
+@media(max-width:768px){
+  #nav .nav-links,.nav-btn{display:none}
+  .hamburger{display:flex}
+  #nav{padding:0 1.5rem}
+
+  .hero-content{padding:2rem 1.5rem 4.5rem}
+  .hero-h1{font-size:clamp(2rem,8vw,3.2rem)}
+  .hero-script{font-size:1.3rem}
+  .hero-eyebrow{font-size:.62rem}
+
+  .dostat-grid{grid-template-columns:1fr}
+  .gal-grid{grid-template-columns:repeat(2,1fr)}
+  .gal-item.wide{grid-column:span 2}
+  .gal-item.tall{grid-row:span 1}
+  section{padding:4rem 0}
+  .emergency-grid{grid-template-columns:repeat(2,1fr)}
+  .kontakty-grid{grid-template-columns:1fr}
+  .favs-grid{grid-template-columns:1fr}
+  .trip-list{grid-template-columns:1fr}
+  .modal-box{max-height:95vh}
+  .modal-inner{padding:0 1.2rem 2rem}
+  .apart-grid{grid-template-columns:1fr;gap:2rem}
+
+  /* weather bar compact */
+  .weather-bar{gap:1.5rem;padding:.8rem 1rem;font-size:.8rem}
+}
+
+/* Mobile */
+@media(max-width:480px){
+  .gal-grid{grid-template-columns:1fr 1fr}
+  .gal-item.wide{grid-column:span 2}
+  .emergency-grid{grid-template-columns:1fr 1fr}
+  .hero-content{padding:1.5rem 1.2rem 4rem}
+  .hero-h1{font-size:2rem}
+  .hero-ctas{flex-direction:column;gap:.7rem}
+  .btn-host,.btn-outline{justify-content:center}
+  .sec-h2{font-size:1.9rem}
+  .container{padding:0 1.2rem}
+  .modal-phases{flex-direction:column;gap:.4rem}
+  .phase-btn{text-align:left}
+  .trip-tabs{gap:.4rem}
+  .trip-tab{font-size:.72rem;padding:.4rem .8rem}
+  .gal-tabs{gap:.4rem}
+  .gal-tab{font-size:.72rem;padding:.35rem .8rem}
+  .weather-bar{flex-wrap:wrap;gap:1rem .8rem}
+  #map{height:320px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <div class="nav-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M12 3c-2 4-5 7-5 11a5 5 0 0010 0c0-4-3-7-5-11z" stroke-linecap="round"/>
+      <path d="M12 3c1 3.5 1 7 0 11" stroke-linecap="round"/>
+      <path d="M9 10c1.5-.5 3-.5 6 0" stroke-linecap="round"/>
+    </svg>
+    Náš druhý domov
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#domov">Domů</a></li>
+    <li><a href="#apartman">O apartmánu</a></li>
+    <li><a href="#jak-se-dostat">Jak se dostat</a></li>
+    <li><a href="#manual" class="nav-btn">Manuál</a></li>
+    <li><a href="#kam-na-vylet">Kam na výlet</a></li>
+    <li><a href="#oblibena-mista">Oblíbená místa</a></li>
+    <li><a href="#kontakty">Kontakty</a></li>
+    <li><a href="#galerie">Galerie</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="openMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- mobile nav -->
+<div class="mobile-nav" id="mobileNav">
+  <span class="close-btn" onclick="closeMobileNav()">×</span>
+  <a href="#domov" onclick="closeMobileNav()">Domů</a>
+  <a href="#apartman" onclick="closeMobileNav()">O apartmánu</a>
+  <a href="#jak-se-dostat" onclick="closeMobileNav()">Jak se dostat</a>
+  <a href="#manual" onclick="closeMobileNav()">Manuál</a>
+  <a href="#kam-na-vylet" onclick="closeMobileNav()">Kam na výlet</a>
+  <a href="#oblibena-mista" onclick="closeMobileNav()">Oblíbená místa</a>
+  <a href="#kontakty" onclick="closeMobileNav()">Kontakty</a>
+  <a href="#galerie" onclick="closeMobileNav()">Galerie</a>
+</div>
+
+<!-- ── HERO ── -->
+<section id="domov">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Estepona · Costa del Sol · Španělsko</p>
+    <h1 class="hero-h1">Vítejte v našem<br>druhém domově</h1>
+    <span class="hero-script">kde slunce nikdy neodchází</span>
+    <div class="hero-gold-line"></div>
+    <div class="hero-ctas">
+      <button class="btn-host" onclick="openHostModal()">
+        <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Jsem host
+      </button>
+      <a href="#apartman" class="btn-outline">Poznejte náš domov</a>
+    </div>
+  </div>
+  <div class="hero-scroll">Scrolluj</div>
+</section>
+
+<!-- ── POČASÍ BAR ── -->
+<div class="weather-bar" id="weatherBar">
+  <div class="w-item">
+    <span class="w-label">Estepona · aktuálně</span>
+  </div>
+  <div class="w-item">
+    <span id="w-icon" style="font-size:1.4rem">☀️</span>
+    <span class="w-temp" id="w-temp">—</span>
+    <span>°C</span>
+  </div>
+  <div class="w-item">
+    <span class="w-label">vítr</span>
+    <span id="w-wind">—</span>&nbsp;km/h
+  </div>
+  <div class="w-item">
+    <span class="w-label">vlhkost</span>
+    <span id="w-hum">—</span>&nbsp;%
+  </div>
+</div>
+
+<!-- ── O APARTMÁNU ── -->
+<section id="apartman">
+  <div class="container">
+    <div class="apart-grid">
+      <div class="apart-imgs">
+        <div class="apart-img-ph big tall">
+          <img src="photos/apartman-obyvak.jpg" alt="Obývací pokoj" onerror="this.style.display='none'"/>
+        </div>
+        <div class="apart-img-ph sq">
+          <img src="apartman-2.jpg" alt="" onerror="this.style.display='none'"/>
+        </div>
+        <div class="apart-img-ph sq">
+          <img src="apartman-3.jpg" alt="" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+      <div class="apart-text">
+        <div class="sec-label">One80 Suites · Estepona</div>
+        <h2 class="sec-h2">Náš apartmán</h2>
+        <span class="sec-script">světlý, vzdušný a plný pohody</span>
+        <p>Apartmán B se nachází v moderním rezidenčním komplexu ONE80 Suites přímo v Esteponě na Costa del Sol. Je naším druhým domovem — místem, kde se zpomalí čas a věci jsou najednou jinak.</p>
+        <p>Prostorný obývací pokoj přechází do plně vybavené kuchyně. Světlý interiér v béžových tónech s detaily v olivové zelené. Přímo z obýváku vyjdete na soukromou zahradu.</p>
+        <div class="apart-features">
+          <span class="feat-tag">🌿 Soukromá zahrada</span>
+          <span class="feat-tag">🚗 Vlastní garážové stání</span>
+          <span class="feat-tag">❄️ Klimatizace</span>
+          <span class="feat-tag">📡 Vysokorychlostní WiFi</span>
+          <span class="feat-tag">📺 Smart TV</span>
+          <span class="feat-tag">🍳 Plně vybavená kuchyně</span>
+          <span class="feat-tag">👨‍👩‍👧 Vhodné pro rodiny</span>
+          <span class="feat-tag">⛳ Ideální pro golfisty</span>
+          <span class="feat-tag">🏖️ Pláž 5 min</span>
+          <span class="feat-tag">🛁 2 koupelny</span>
+          <span class="feat-tag">🛏️ 2 ložnice</span>
+          <span class="feat-tag">🔒 Bezpečný komplex</span>
+        </div>
+        <p style="color:var(--text-l);font-size:.9rem">Estepona je jedno z nejautentičtějších míst celé Costa del Sol. Bílé uličky posypané květinami, rybářský přístav, nádherné pláže a desítky golfových hřišť v okolí.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── JAK SE DOSTAT ── -->
+<section id="jak-se-dostat">
+  <div class="container">
+    <div class="sec-label">Cesta k nám</div>
+    <h2 class="sec-h2">Jak se k nám dostanete</h2>
+    <span class="sec-script">z Málagy to trvá hodinu</span>
+
+    <div class="dostat-grid">
+      <!-- Letiště -->
+      <div class="dostat-card">
+        <div class="dostat-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Letiště Málaga</h3>
+        <p>Nejbližší mezinárodní letiště. Letí se sem z Prahy i Brna, v létě i mnoho přímých linek.</p>
+        <div class="price-row"><span>Vzdálenost</span><strong>~85 km</strong></div>
+        <div class="price-row"><span>Doba jízdy</span><strong>~60–75 min</strong></div>
+        <div class="price-row"><span>Dálnice</span><strong>AP-7 / A-7</strong></div>
+        <p style="margin-top:1rem;font-size:.88rem;color:var(--text-l)">Doporučujeme vzít dálnici AP-7 (zpoplatněna) — ušetří čas a cesta je příjemnější.</p>
+      </div>
+
+      <!-- Půjčení auta -->
+      <div class="dostat-card">
+        <div class="dostat-icon">
+          <svg viewBox="0 0 24 24"><rect x="1" y="8" width="22" height="10" rx="2"/><path d="M5 8V6a2 2 0 012-2h10a2 2 0 012 2v2M1 12h22M7 16h.01M17 16h.01" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Půjčení auta</h3>
+        <p>Auto si půjčte přímo na letišti — přepážky jsou v suterénu (patro -1, -2) nebo v přízemí Terminálu 2 a 3.</p>
+        <div class="rent-list">
+          <span class="rent-item">OK Mobility</span>
+          <span class="rent-item">SIXT</span>
+          <span class="rent-item">Europcar</span>
+          <span class="rent-item">Hertz</span>
+          <span class="rent-item">Avis / Budget</span>
+          <span class="rent-item">Goldcar</span>
+        </div>
+        <div class="price-row" style="margin-top:1rem"><span>Malé auto / týden</span><strong>~150 €</strong></div>
+        <div class="price-row"><span>Rodinné SUV / týden</span><strong>~250–350 €</strong></div>
+        <p class="dostat-note">Ceny se liší dle sezóny. V létě doporučujeme rezervovat předem.</p>
+      </div>
+
+      <!-- Navigace -->
+      <div class="dostat-card">
+        <div class="dostat-icon">
+          <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round"/><circle cx="12" cy="11" r="3"/></svg>
+        </div>
+        <h3>Navigace k apartmánu</h3>
+        <p>Adresa pro navigaci:</p>
+        <div style="background:var(--cream);padding:.8rem 1rem;border-radius:4px;margin:.8rem 0;font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--olive-d)">
+          Avenida del Fuego 50<br>
+          <span style="font-size:.9rem;font-family:'Jost',sans-serif;color:var(--text-l)">29693 Estepona, Málaga</span>
+        </div>
+        <p style="font-size:.88rem;color:var(--text-l)">Klikněte na tlačítko a spustí se navigace přímo k nám.</p>
+        <div class="nav-btns">
+          <a href="https://maps.google.com/?q=Avenida+del+Fuego+50+Estepona" target="_blank" class="map-btn">
+            <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+            Google Maps
+          </a>
+          <a href="https://waze.com/ul?q=Avenida+del+Fuego+50+Estepona" target="_blank" class="map-btn">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg>
+            Waze
+          </a>
+          <a href="https://maps.apple.com/?address=Avenida+del+Fuego+50,+Estepona" target="_blank" class="map-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8 6 4 9 4 14a8 8 0 0016 0c0-5-4-8-8-12z" stroke-linecap="round"/></svg>
+            Apple Maps
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MANUÁL ── -->
+<section id="manual">
+  <div class="container">
+    <div class="manual-intro">
+      <div class="sec-label center">Průvodce apartmánem</div>
+      <h2 class="sec-h2" style="text-align:center">Manuál</h2>
+      <span class="sec-script" style="text-align:center;display:block">vše, co potřebujete vědět</span>
+      <p>Připravili jsme pro vás přehledný průvodce. Klikněte na sekci, která vás zajímá.</p>
+    </div>
+
+    <!-- PŘÍJEZD -->
+    <div class="manual-group">
+      <div class="manual-group-title">🚗 Před příjezdem & příjezd</div>
+      <div class="manual-cards">
+
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><div class="mc-title">Hlavní brána & parkování</div><div class="mc-sub">Vstup do komplexu a garáže</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <p><strong>Hlavní brána:</strong> Pár metrů před bránou namiřte ovladač a stiskněte spodní pravý spínač. Brána se sama zavře.</p>
+            <p>Projeďte branou rovně až na konec panelové cesty a vydejte se doleva — na konci vpravo jsou tmavá vrata do garáže.</p>
+            <p><strong>Vrata do garáže:</strong> Otevřete prvním horním spínačem. Zavřou se samy, nebo je zavřete stejným spínačem.</p>
+            <p><strong>Parkovací stání č. 208:</strong> Projeďte vraty doprava, rovně na konec garáže — po pravé straně vedle zelených dveří.</p>
+            <div class="mc-note">⚠️ Prosíme, parkujte výhradně na stání č. 208. Sousedé jsou na to velmi citliví.</div>
+          </div>
+        </div>
+
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M5 11l7-9 7 9M5 11v8a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><div class="mc-title">Výtah & vstup do apartmánu</div><div class="mc-sub">Poslední kroky</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <p>Z garáže vyjdete zelenými dveřmi hned vedle parkovacího stání, projdete dveřmi vpravo a dostanete se k výtahu.</p>
+            <p><strong>Pozor:</strong> Apartmán se nachází v 1. patře, ve výtahu je však značeno nulou <strong>"0"</strong>.</p>
+            <p>Po vystoupení z výtahu je apartmán za rohem po Vaší levé ruce — <strong>Apartmán B</strong>.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- OBÝVÁK & TERASA -->
+    <div class="manual-group">
+      <div class="manual-group-title">🛋️ Obývací pokoj & terasa</div>
+      <div class="manual-cards">
+
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10H3V7z" stroke-linecap="round"/><path d="M3 13h18" stroke-linecap="round"/></svg></div>
+            <div><div class="mc-title">Obývací pokoj</div><div class="mc-sub">Srdce apartmánu</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <p><strong>Vybavení:</strong> Smart TV s ovladačem, rozkládací gauč, jídelní set, odkládací stolek, koberec, Bluetooth reproduktor.</p>
+            <p><strong>Kamera</strong> — při příjezdu ji prosím vypojte ze zásuvky. Při odjezdu znovu zapojte. Děkujeme.</p>
+            <p><strong>Rozkládací gauč:</strong> Sundejte polštáře, nadzvedněte sedací část co nejvýše a posuňte do prostoru — gauč se sám rozloží. Pozor na nohy.</p>
+            <p><strong>Rozkládací stůl:</strong> Pootočte desku po směru hodinových ručiček. Složíte zpět opačně.</p>
+            <p><strong>Žaluzie:</strong> Korálky = stínění, provázek = roztahování a zatahování.</p>
+            <div class="mc-note">🧤 Prosíme, nechodte po koberci v botách.</div>
+          </div>
+        </div>
+
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7" stroke-linecap="round"/></svg></div>
+            <div><div class="mc-title">Posuvné dveře na terasu</div><div class="mc-sub">Pozor na kliku!</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <p>Pro otevření dveří na terasu dejte kliku do <strong>vodorovné pozice</strong>, posuňte dveře doprava.</p>
+            <div class="mc-note">⚠️ Pozor, aby klika nenarazila na rám dveří po pravé straně — pro jistotu otočte klikou ještě o 45° proti směru hodin.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- KUCHYNĚ -->
+    <div class="manual-group">
+      <div class="manual-group-title">🍳 Kuchyně</div>
+      <div class="manual-cards">
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M3 11h18M12 3v8m-4-4l4 4 4-4" stroke-linecap="round"/></svg></div>
+            <div><div class="mc-title">Kuchyňské vybavení</div><div class="mc-sub">Co najdete v kuchyni</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <ul>
+              <li>Indukční varná deska</li>
+              <li>Trouba</li>
+              <li>Myčka na nádobí</li>
+              <li>Lednice s mrazákem</li>
+              <li>Kávovar</li>
+              <li>Mikrovlnná trouba</li>
+              <li>Nádobí, příbory, sklenice</li>
+            </ul>
+            <p style="font-style:italic;color:var(--olive-l)">Podrobný popis obsluhy spotřebičů bude doplněn.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOŽNICE & KOUPELNY -->
+    <div class="manual-group">
+      <div class="manual-group-title">🛏️ Ložnice & koupelny</div>
+      <div class="manual-cards">
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M3 12V7a1 1 0 011-1h16a1 1 0 011 1v5M3 12v5a1 1 0 001 1h16a1 1 0 001-1v-5M3 12h18" stroke-linecap="round"/></svg></div>
+            <div><div class="mc-title">Ložnice</div><div class="mc-sub">Lůžkoviny & komfort</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <p style="font-style:italic;color:var(--olive-l)">Obsah bude doplněn.</p>
+          </div>
+        </div>
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M7 4v16M7 4a4 4 0 018 0v16M3 12h18" stroke-linecap="round"/></svg></div>
+            <div><div class="mc-title">Koupelny</div><div class="mc-sub">Vybavení & doporučení</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <p style="font-style:italic;color:var(--olive-l)">Obsah bude doplněn.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TECHNIKA -->
+    <div class="manual-group">
+      <div class="manual-group-title">📡 WiFi & technika</div>
+      <div class="manual-cards">
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01M4.343 12.343a8 8 0 0115.314 0M1.343 9.343a12 12 0 0121.314 0" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><div class="mc-title">WiFi & Smart TV</div><div class="mc-sub">Heslo & ovládání</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <p style="font-style:italic;color:var(--olive-l)">WiFi přihlašovací údaje a návod na Smart TV budou doplněny.</p>
+          </div>
+        </div>
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M4 8h16M4 16h16M9 4v16M15 4v16" stroke-linecap="round"/></svg></div>
+            <div><div class="mc-title">Klimatizace</div><div class="mc-sub">Nastavení & provoz</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <p style="font-style:italic;color:var(--olive-l)">Obsah bude doplněn.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PŘED ODJEZDEM -->
+    <div class="manual-group">
+      <div class="manual-group-title">✅ Před odjezdem</div>
+      <div class="manual-cards">
+        <div class="manual-card" onclick="toggleMC(this)">
+          <div class="mc-header">
+            <div class="mc-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><div class="mc-title">Odjezdový checklist</div><div class="mc-sub">Než zavřete dveře</div></div>
+            <div class="mc-toggle"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="mc-body">
+            <ul class="checklist">
+              <li>Vypnout klimatizaci</li>
+              <li>Zavřít a zajistit všechna okna</li>
+              <li>Aktivovat kameru v obývacím pokoji</li>
+              <li>Zkontrolovat všechny spotřebiče (vypnuto)</li>
+              <li>Zkontrolovat lednici</li>
+              <li>Vynést odpadky</li>
+              <li>Uzamknout dveře apartmánu</li>
+              <li>Uzavřít vrata garáže</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="manual-addr">
+      <p>Adresa apartmánu</p>
+      <div class="addr">Avenida del Fuego 50 · 29693 Estepona · Málaga</div>
+      <div class="nav-btns" style="justify-content:center;margin-top:1rem">
+        <a href="https://maps.google.com/?q=Avenida+del+Fuego+50+Estepona" target="_blank" class="map-btn">Google Maps</a>
+        <a href="https://waze.com/ul?q=Avenida+del+Fuego+50+Estepona" target="_blank" class="map-btn">Waze</a>
+        <a href="https://maps.apple.com/?address=Avenida+del+Fuego+50,+Estepona" target="_blank" class="map-btn">Apple Maps</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── KAM NA VÝLET ── -->
+<section id="kam-na-vylet">
+  <div class="container">
+    <div class="sec-label">Costa del Sol & okolí</div>
+    <h2 class="sec-h2">Kam na výlet</h2>
+    <span class="sec-script">objevte krásy Andalusie</span>
+
+    <div class="trip-tabs" id="tripTabs">
+      <button class="trip-tab active" onclick="filterTrips('vse',this)">Vše</button>
+      <button class="trip-tab" onclick="filterTrips('plaze',this)">🏖️ Pláže</button>
+      <button class="trip-tab" onclick="filterTrips('golf',this)">⛳ Golf</button>
+      <button class="trip-tab" onclick="filterTrips('restaurace',this)">🍷 Restaurace</button>
+      <button class="trip-tab" onclick="filterTrips('historicka',this)">🏛️ Historická města</button>
+      <button class="trip-tab" onclick="filterTrips('priroda',this)">🌿 Příroda</button>
+      <button class="trip-tab" onclick="filterTrips('nakupy',this)">🛍️ Nákupy</button>
+      <button class="trip-tab" onclick="filterTrips('vylety',this)">🗺️ Jednodenní výlety</button>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="trip-list" id="tripList">
+      <!-- Pláže -->
+      <div class="trip-card visible" data-cat="plaze" data-lat="36.4220" data-lng="-5.1510">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8dfe0,#9cb8ba)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">🏖️ Pláž</div>
+          <h3>Playa de la Rada</h3>
+          <p>Největší pláž v Esteponě — dlouhá, čistá, s promenádou lemovanou palmami.</p>
+          <div class="trip-meta"><span>📍 3 min</span><span>🚗 1,5 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=Playa+de+la+Rada+Estepona" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=Playa+de+la+Rada+Estepona" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="trip-card visible" data-cat="plaze" data-lat="36.4300" data-lng="-5.1400">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#b5d5c5,#8cb5a5)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">🏖️ Pláž</div>
+          <h3>Playa El Cristo</h3>
+          <p>Útulná zátoka u přístavu — oblíbená pro klidnější plavání a snídaně v přilehlých kavárnách.</p>
+          <div class="trip-meta"><span>📍 5 min</span><span>🚗 2 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=Playa+El+Cristo+Estepona" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=Playa+El+Cristo+Estepona" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Golf -->
+      <div class="trip-card visible" data-cat="golf" data-lat="36.4470" data-lng="-5.1650">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8d8b8,#98b885)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">⛳ Golf</div>
+          <h3>Real Club de Golf Estepona</h3>
+          <p>Impozantní hřiště s výhledy na moře a Gibraltar. Oblíbené i mezi profesionály.</p>
+          <div class="trip-meta"><span>📍 10 min</span><span>🚗 7 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=Real+Club+Golf+Estepona" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=Real+Club+Golf+Estepona" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="trip-card visible" data-cat="golf" data-lat="36.4650" data-lng="-5.1900">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#d0e0c0,#a0c090)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">⛳ Golf</div>
+          <h3>La Resina Golf</h3>
+          <p>Moderní hřiště s panoramatickým výhledem, perfektní údržba a přátelský personál.</p>
+          <div class="trip-meta"><span>📍 15 min</span><span>🚗 12 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=La+Resina+Golf+Estepona" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=La+Resina+Golf+Estepona" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Historická města -->
+      <div class="trip-card visible" data-cat="historicka" data-lat="36.4253" data-lng="-5.1462">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#f0e0c8,#d0b898)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">🏛️ Historické město</div>
+          <h3>Estepona Casco Antiguo</h3>
+          <p>Bílé uličky, květinová výzdoba, rybářský přístav a autentická atmosféra. Povinnost!</p>
+          <div class="trip-meta"><span>📍 5 min</span><span>🚗 2 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=Casco+Antiguo+Estepona" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=Casco+Antiguo+Estepona" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="trip-card visible" data-cat="historicka vylety" data-lat="36.5100" data-lng="-4.8834">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#e8d8c0,#c8a880)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">🏛️ Historické město · Výlet</div>
+          <h3>Marbella</h3>
+          <p>Ikonická Puerto Banús, staré město s náměstím Naranjos a skvělé restaurace.</p>
+          <div class="trip-meta"><span>📍 40 min</span><span>🚗 42 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=Marbella+Old+Town" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=Marbella" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jednodenní výlety -->
+      <div class="trip-card visible" data-cat="vylety" data-lat="36.7464" data-lng="-5.1616">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#d8c8b8,#b8a898)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">🗺️ Jednodenní výlet</div>
+          <h3>Ronda</h3>
+          <p>Skalní město se slavným mostem Puente Nuevo. Jeden z nejpůsobivějších výhledů ve Španělsku.</p>
+          <div class="trip-meta"><span>📍 90 min</span><span>🚗 100 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=Ronda+Spain" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=Ronda+Malaga" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="trip-card visible" data-cat="vylety" data-lat="36.1408" data-lng="-5.3536">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8d8e8,#98a8b8)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">🗺️ Jednodenní výlet</div>
+          <h3>Gibraltar</h3>
+          <p>Britský teritorium s ikonickou skálou, opicemi a duty-free nakupováním. Jedinečná zkušenost.</p>
+          <div class="trip-meta"><span>📍 60 min</span><span>🚗 55 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=Gibraltar" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=Gibraltar" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nákupy -->
+      <div class="trip-card visible" data-cat="nakupy" data-lat="36.5000" data-lng="-4.9100">
+        <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#e0d0e8,#b8a8c8)"></div></div>
+        <div class="trip-card-body">
+          <div class="trip-card-cat">🛍️ Nákupy</div>
+          <h3>La Cañada (Marbella)</h3>
+          <p>Největší obchodní centrum na Costa del Sol. Zara, H&M, El Corte Inglés, kina a restaurace.</p>
+          <div class="trip-meta"><span>📍 35 min</span><span>🚗 35 km</span></div>
+          <div class="trip-nav">
+            <a href="https://maps.google.com/?q=La+Canada+Shopping+Marbella" target="_blank">Google Maps</a>
+            <a href="https://waze.com/ul?q=La+Cañada+Marbella" target="_blank">Waze</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── OBLÍBENÁ MÍSTA ── -->
+<section id="oblibena-mista">
+  <div class="container">
+    <div class="sec-label">Osobní doporučení</div>
+    <h2 class="sec-h2">Naše oblíbená místa</h2>
+    <span class="sec-script">místa, která milujeme a rádi sdílíme</span>
+
+    <div class="favs-grid">
+      <div class="fav-card">
+        <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#e8c8b0,#c8a880)"></div></div>
+        <div class="fav-card-body">
+          <div class="fav-card-emoji">☕</div>
+          <h3>Naše oblíbená kavárna</h3>
+          <p>Tady si dáváme první ranní kávu s výhledem na moře. Croissanty jsou tady nejlepší v celé Esteponě.</p>
+          <span class="fav-tag">Snídaně</span>
+          <div class="trip-nav"><a href="#" class="map-btn-ph">Navigovat →</a></div>
+        </div>
+      </div>
+
+      <div class="fav-card">
+        <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8d8c0,#a0b890)"></div></div>
+        <div class="fav-card-body">
+          <div class="fav-card-emoji">🍷</div>
+          <h3>Naše nejoblíbenější restaurace</h3>
+          <p>Sem chodíme pokaždé, když sem přijedeme. Čerstvé ryby, výborné víno a příjemná terasa.</p>
+          <span class="fav-tag">Oběd & večeře</span>
+          <div class="trip-nav"><a href="#" class="map-btn-ph">Navigovat →</a></div>
+        </div>
+      </div>
+
+      <div class="fav-card">
+        <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c0d8e8,#90b0c8)"></div></div>
+        <div class="fav-card-body">
+          <div class="fav-card-emoji">🌅</div>
+          <h3>Nejlepší západ slunce</h3>
+          <p>Jedno místo na promenádě, odkud je západ slunce nad mořem naprosto neuvěřitelný.</p>
+          <span class="fav-tag">Večer</span>
+          <div class="trip-nav"><a href="#" class="map-btn-ph">Navigovat →</a></div>
+        </div>
+      </div>
+
+      <div class="fav-card">
+        <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#d0c8b8,#b0a898)"></div></div>
+        <div class="fav-card-body">
+          <div class="fav-card-emoji">🏖️</div>
+          <h3>Naše oblíbená pláž</h3>
+          <p>Klidnější část pláže, kde není příliš lidí i v létě. Výborný chiringuito hned vedle.</p>
+          <span class="fav-tag">Pláž</span>
+          <div class="trip-nav"><a href="#" class="map-btn-ph">Navigovat →</a></div>
+        </div>
+      </div>
+
+      <div class="fav-card">
+        <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8d0c0,#a8b8a0)"></div></div>
+        <div class="fav-card-body">
+          <div class="fav-card-emoji">⛳</div>
+          <h3>Naše oblíbené hřiště</h3>
+          <p>Skvělé fairwaye, výhledy na moře a příjemný golfový klub. Vždy se sem těšíme.</p>
+          <span class="fav-tag">Golf</span>
+          <div class="trip-nav"><a href="#" class="map-btn-ph">Navigovat →</a></div>
+        </div>
+      </div>
+
+      <div class="fav-card">
+        <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#e8d8c8,#c8b8a8)"></div></div>
+        <div class="fav-card-body">
+          <div class="fav-card-emoji">🚗</div>
+          <h3>Kam bereme návštěvy</h3>
+          <p>Ronda a Gibraltar — dva výlety, které nikoho nikdy nezklame. Ronda je absolutní must.</p>
+          <span class="fav-tag">Výlet</span>
+          <div class="trip-nav"><a href="#" class="map-btn-ph">Navigovat →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── KONTAKTY ── -->
+<section id="kontakty">
+  <div class="container">
+    <div class="sec-label">Důležité kontakty</div>
+    <h2 class="sec-h2">Kontakty</h2>
+    <span class="sec-script">vždy víte, na koho se obrátit</span>
+
+    <div class="kontakty-grid">
+      <div class="kontakt-group">
+        <div class="kontakt-group-title">🏠 Apartmán</div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">M</div>
+          <div class="kontakt-info">
+            <strong>Majitelé</strong>
+            <span>Váš první kontakt při čemkoliv</span>
+            <div class="kontakt-actions">
+              <a href="tel:+420000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg>Zavolat</a>
+              <a href="https://wa.me/420000000000" class="kontakt-btn">WhatsApp</a>
+            </div>
+          </div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">S</div>
+          <div class="kontakt-info">
+            <strong>Správce objektu</strong>
+            <span>Technické záležitosti komplexu</span>
+            <div class="kontakt-actions">
+              <a href="tel:+34000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg>Zavolat</a>
+            </div>
+          </div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">U</div>
+          <div class="kontakt-info">
+            <strong>Paní na úklid</strong>
+            <span>Úklid apartmánu</span>
+            <div class="kontakt-actions">
+              <a href="tel:+34000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg>Zavolat</a>
+              <a href="https://wa.me/34000000000" class="kontakt-btn">WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kontakt-group">
+        <div class="kontakt-group-title">🔧 Technická pomoc</div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">🔧</div>
+          <div class="kontakt-info"><strong>Instalatér</strong><span>Obsah bude doplněn</span></div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">⚡</div>
+          <div class="kontakt-info"><strong>Elektrikář</strong><span>Obsah bude doplněn</span></div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">❄️</div>
+          <div class="kontakt-info"><strong>Servis klimatizace</strong><span>Obsah bude doplněn</span></div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">🔑</div>
+          <div class="kontakt-info"><strong>Zámečník</strong><span>Obsah bude doplněn</span></div>
+        </div>
+      </div>
+
+      <div class="kontakt-group">
+        <div class="kontakt-group-title">🏥 Zdraví</div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">👨‍⚕️</div>
+          <div class="kontakt-info"><strong>Praktický lékař</strong><span>Obsah bude doplněn</span></div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">🦷</div>
+          <div class="kontakt-info"><strong>Zubař</strong><span>Obsah bude doplněn</span></div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">💊</div>
+          <div class="kontakt-info"><strong>Lékárna</strong><span>Farmacia más cercana</span></div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">🏥</div>
+          <div class="kontakt-info"><strong>Nemocnice</strong><span>Hospital Costa del Sol</span></div>
+        </div>
+      </div>
+
+      <div class="kontakt-group">
+        <div class="kontakt-group-title">🛒 Praktické informace</div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">🛒</div>
+          <div class="kontakt-info">
+            <strong>Nejbližší supermarket</strong>
+            <span>Mercadona / Lidl</span>
+            <div class="kontakt-actions">
+              <a href="https://maps.google.com/?q=Mercadona+Estepona" target="_blank" class="kontakt-btn">Navigovat</a>
+            </div>
+          </div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">🏧</div>
+          <div class="kontakt-info">
+            <strong>Bankomat</strong>
+            <span>Cajero más cercano</span>
+            <div class="kontakt-actions">
+              <a href="https://maps.google.com/?q=cajero+automatico+Estepona" target="_blank" class="kontakt-btn">Navigovat</a>
+            </div>
+          </div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">⛽</div>
+          <div class="kontakt-info">
+            <strong>Benzínová stanice</strong>
+            <span>Gasolinera más cercana</span>
+            <div class="kontakt-actions">
+              <a href="https://maps.google.com/?q=gasolinera+Estepona" target="_blank" class="kontakt-btn">Navigovat</a>
+            </div>
+          </div>
+        </div>
+        <div class="kontakt-item">
+          <div class="kontakt-av">🚕</div>
+          <div class="kontakt-info">
+            <strong>Taxi</strong>
+            <span>Obsah bude doplněn</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tísňová čísla -->
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--olive-d);margin:3rem 0 1rem">Tísňová čísla · Španělsko</h3>
+    <div class="emergency-grid">
+      <div class="emergency-card">
+        <div class="ec-num">112</div>
+        <div class="ec-label">Integrovaný záchranný systém</div>
+      </div>
+      <div class="emergency-card">
+        <div class="ec-num">091</div>
+        <div class="ec-label">Policie Nacional</div>
+      </div>
+      <div class="emergency-card">
+        <div class="ec-num">080</div>
+        <div class="ec-label">Hasiči</div>
+      </div>
+      <div class="emergency-card">
+        <div class="ec-num">061</div>
+        <div class="ec-label">Záchranná služba</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GALERIE ── -->
+<section id="galerie">
+  <div class="container">
+    <div class="sec-label">Fotografie</div>
+    <h2 class="sec-h2">Galerie</h2>
+    <span class="sec-script">atmosféra, světlo, pohoda</span>
+
+    <div class="gal-tabs" id="galTabs">
+      <button class="gal-tab active" onclick="filterGal('vse',this)">Vše</button>
+      <button class="gal-tab" onclick="filterGal('apartman',this)">Apartmán</button>
+      <button class="gal-tab" onclick="filterGal('zahrada',this)">Zahrada</button>
+      <button class="gal-tab" onclick="filterGal('komplex',this)">Komplex</button>
+      <button class="gal-tab" onclick="filterGal('plaze',this)">Pláže</button>
+      <button class="gal-tab" onclick="filterGal('golf',this)">Golf</button>
+      <button class="gal-tab" onclick="filterGal('estepona',this)">Estepona</button>
+      <button class="gal-tab" onclick="filterGal('okoli',this)">Okolí</button>
+    </div>
+
+    <div class="gal-grid" id="galGrid">
+      <!-- photos/xxx.jpg — při nahrání fotek se obrázky zobrazí automaticky -->
+      <div class="gal-item wide tall" data-cat="apartman">
+        <img src="photos/gal-apartman-1.jpg" alt="Obývací pokoj" onerror="this.style.display='none'"/>
+        <div class="ph">Obývací pokoj</div>
+      </div>
+      <div class="gal-item" data-cat="apartman">
+        <img src="photos/gal-apartman-2.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Kuchyň</div>
+      </div>
+      <div class="gal-item" data-cat="apartman">
+        <img src="photos/gal-apartman-3.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Ložnice</div>
+      </div>
+      <div class="gal-item" data-cat="zahrada">
+        <img src="photos/gal-zahrada-1.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Zahrada</div>
+      </div>
+      <div class="gal-item" data-cat="zahrada">
+        <img src="photos/gal-zahrada-2.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Terasa</div>
+      </div>
+      <div class="gal-item wide" data-cat="komplex">
+        <img src="photos/gal-komplex-1.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph" style="aspect-ratio:2/1">ONE80 Suites</div>
+      </div>
+      <div class="gal-item" data-cat="plaze">
+        <img src="gal-plaz-1.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Pláž</div>
+      </div>
+      <div class="gal-item" data-cat="plaze">
+        <img src="gal-plaz-2.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Moře</div>
+      </div>
+      <div class="gal-item" data-cat="golf">
+        <img src="gal-golf-1.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Golf</div>
+      </div>
+      <div class="gal-item" data-cat="estepona">
+        <img src="gal-estepona-1.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Estepona</div>
+      </div>
+      <div class="gal-item" data-cat="estepona">
+        <img src="gal-estepona-2.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Přístav</div>
+      </div>
+      <div class="gal-item" data-cat="okoli">
+        <img src="gal-okoli-1.jpg" alt="" onerror="this.style.display='none'"/>
+        <div class="ph">Okolí</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">Náš druhý domov · Estepona</div>
+  <p>ONE80 Suites · Avenida del Fuego 50 · 29693 Estepona · Málaga, Španělsko</p>
+  <p style="margin-top:.5rem;font-size:.72rem;opacity:.4">s láskou vytvořeno pro naše hosty</p>
+</footer>
+
+<!-- ── JSEM HOST MODAL ── -->
+<div id="host-modal" onclick="closeHostModal(event)">
+  <div class="modal-box">
+    <div class="modal-close">
+      <button onclick="closeHostModal(null,true)">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 1l12 12M13 1L1 13" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-inner">
+      <h2 class="modal-h">Průvodce pobytem</h2>
+      <span class="modal-sub">vše krok za krokem</span>
+
+      <div class="modal-phases">
+        <button class="phase-btn active" onclick="switchPhase('pred-cestou',this)">✈️ Před cestou</button>
+        <button class="phase-btn" onclick="switchPhase('po-prijezdu',this)">🏠 Po příjezdu</button>
+        <button class="phase-btn" onclick="switchPhase('behem-pobytu',this)">☀️ Během pobytu</button>
+        <button class="phase-btn" onclick="switchPhase('pred-odjezdem',this)">✅ Před odjezdem</button>
+      </div>
+
+      <!-- Před cestou -->
+      <div class="phase-content active" id="phase-pred-cestou">
+        <div class="phase-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Letiště Málaga</strong>
+            <p>Nejbližší letiště. Po příletu jděte do suterénu (patro -1, -2) nebo přízemí Terminálu 2/3 k půjčovnám aut.</p>
+          </div>
+        </div>
+        <div class="phase-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Půjčení auta</strong>
+            <p>Doporučujeme OK Mobility, SIXT nebo Europcar. Rezervujte předem — v létě bývají vyprodané.</p>
+          </div>
+        </div>
+        <div class="phase-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Cesta do Estepony</strong>
+            <p>Dálnicí AP-7 směr Algeciras, cca 60–75 min. Navigujte na: <em>Avenida del Fuego 50, Estepona</em></p>
+            <div class="nav-btns" style="margin-top:.6rem">
+              <a href="https://maps.google.com/?q=Avenida+del+Fuego+50+Estepona" target="_blank" class="map-btn">Google Maps</a>
+              <a href="https://waze.com/ul?q=Avenida+del+Fuego+50+Estepona" target="_blank" class="map-btn">Waze</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Po příjezdu -->
+      <div class="phase-content" id="phase-po-prijezdu">
+        <div class="phase-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Hlavní brána</strong>
+            <p>Namiřte ovladač a stiskněte spodní pravý spínač. Projeďte rovně, na konci doleva.</p>
+          </div>
+        </div>
+        <div class="phase-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Garáž a parkování</strong>
+            <p>Otevřete vrata horním spínačem. Zaparkujte na stání č. 208 — vedle zelených dveří na konci garáže.</p>
+            <div class="step-note">⚠️ Výhradně stání č. 208 — sousedé jsou na to citliví.</div>
+          </div>
+        </div>
+        <div class="phase-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Výtah</strong>
+            <p>Zelenými dveřmi → dveřmi vpravo → výtah. Jeďte na patro <strong>"0"</strong> (= 1. patro).</p>
+          </div>
+        </div>
+        <div class="phase-step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>Apartmán B</strong>
+            <p>Za rohem po levé ruce. Vypojte kameru při příjezdu.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Během pobytu -->
+      <div class="phase-content" id="phase-behem-pobytu">
+        <div class="phase-step">
+          <div class="step-num">📋</div>
+          <div class="step-body">
+            <strong>Manuál apartmánu</strong>
+            <p>Vše o vybavení najdete v sekci <a href="#manual" onclick="closeHostModal(null,true)" style="color:var(--olive)">Manuál</a>.</p>
+          </div>
+        </div>
+        <div class="phase-step">
+          <div class="step-num">📞</div>
+          <div class="step-body">
+            <strong>Kontakty</strong>
+            <p>Všechny důležité kontakty jsou v sekci <a href="#kontakty" onclick="closeHostModal(null,true)" style="color:var(--olive)">Kontakty</a>.</p>
+          </div>
+        </div>
+        <div class="phase-step">
+          <div class="step-num">🗺️</div>
+          <div class="step-body">
+            <strong>Výlety & doporučení</strong>
+            <p>Naše tipy najdete v sekci <a href="#kam-na-vylet" onclick="closeHostModal(null,true)" style="color:var(--olive)">Kam na výlet</a> a <a href="#oblibena-mista" onclick="closeHostModal(null,true)" style="color:var(--olive)">Oblíbená místa</a>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Před odjezdem -->
+      <div class="phase-content" id="phase-pred-odjezdem">
+        <div class="phase-step">
+          <div class="step-num">✅</div>
+          <div class="step-body">
+            <strong>Odjezdový checklist</strong>
+            <p>Zkontrolujte před zavřením dveří:</p>
+            <ul class="checklist" style="margin-top:.8rem">
+              <li>Vypnout klimatizaci</li>
+              <li>Zavřít a zajistit všechna okna</li>
+              <li>Aktivovat kameru v obývacím pokoji</li>
+              <li>Zkontrolovat spotřebiče (vypnuto)</li>
+              <li>Zkontrolovat lednici</li>
+              <li>Vynést odpadky</li>
+              <li>Uzamknout dveře apartmánu</li>
+              <li>Uzavřít vrata garáže</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* ─── NAV ─── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+  // active link
+  document.querySelectorAll('#navLinks a').forEach(a => {
+    const sec = document.querySelector(a.getAttribute('href'));
+    if (!sec) return;
+    const r = sec.getBoundingClientRect();
+    a.classList.toggle('active', r.top <= 80 && r.bottom > 80);
+  });
+});
+
+function openMobileNav(){ document.getElementById('mobileNav').classList.add('open'); }
+function closeMobileNav(){ document.getElementById('mobileNav').classList.remove('open'); }
+
+/* ─── HERO PARALLAX ─── */
+const heroBg = document.getElementById('heroBg');
+window.addEventListener('scroll', () => {
+  if (window.scrollY < window.innerHeight)
+    heroBg.style.transform = `translateY(${window.scrollY * 0.25}px)`;
+});
+
+/* ─── WEATHER ─── */
+(async () => {
+  try {
+    const r = await fetch(
+      'https://api.open-meteo.com/v1/forecast?latitude=36.4257&longitude=-5.1462&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&wind_speed_unit=kmh'
+    );
+    const d = await r.json();
+    const c = d.current;
+    const icons = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',80:'🌦️',95:'⛈️'};
+    document.getElementById('w-temp').textContent = Math.round(c.temperature_2m);
+    document.getElementById('w-wind').textContent = Math.round(c.wind_speed_10m);
+    document.getElementById('w-hum').textContent = c.relative_humidity_2m;
+    document.getElementById('w-icon').textContent = icons[c.weather_code] || '🌡️';
+  } catch(e){}
+})();
+
+/* ─── MANUÁL ACCORDION ─── */
+function toggleMC(card){
+  const open = card.classList.contains('open');
+  document.querySelectorAll('.manual-card').forEach(c => c.classList.remove('open'));
+  if (!open) card.classList.add('open');
+}
+
+/* ─── MAP ─── */
+const map = L.map('map').setView([36.4257,-5.1462], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'© OpenStreetMap contributors',
+  maxZoom:18
+}).addTo(map);
+
+// Custom marker colors per category
+const catColors = {
+  plaze:'#5b9bd5', golf:'#5c7a52', historicka:'#c8a052', restaurace:'#c85252',
+  vylety:'#7a52c8', nakupy:'#c8527a', priroda:'#52c880'
+};
+
+function makeIcon(color){
+  return L.divIcon({
+    className:'',
+    html:`<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
+    iconSize:[14,14],iconAnchor:[7,7]
+  });
+}
+
+// Apartment marker
+L.marker([36.4257,-5.1462],{
+  icon: L.divIcon({
+    className:'',
+    html:`<div style="width:16px;height:16px;border-radius:50%;background:#3e5738;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4)"></div>`,
+    iconSize:[16,16],iconAnchor:[8,8]
+  })
+}).addTo(map).bindPopup('<strong>🏠 Náš apartmán</strong><br>Avenida del Fuego 50');
+
+// Trip markers from cards
+const allMapMarkers = [];
+document.querySelectorAll('.trip-card[data-lat]').forEach(card => {
+  const lat = parseFloat(card.dataset.lat);
+  const lng = parseFloat(card.dataset.lng);
+  const cats = (card.dataset.cat || '').split(' ');
+  const title = card.querySelector('h3')?.textContent || '';
+  const cat = cats[0];
+  const color = catColors[cat] || '#888';
+  const marker = L.marker([lat,lng],{icon:makeIcon(color)}).addTo(map)
+    .bindPopup(`<strong>${title}</strong>`);
+  allMapMarkers.push({marker, cats});
+});
+
+/* ─── TRIP FILTER ─── */
+let currentTripCat = 'vse';
+function filterTrips(cat, btn){
+  currentTripCat = cat;
+  document.querySelectorAll('.trip-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.trip-card').forEach(c => {
+    const cats = (c.dataset.cat || '').split(' ');
+    c.classList.toggle('visible', cat === 'vse' || cats.includes(cat));
+  });
+  allMapMarkers.forEach(({marker,cats}) => {
+    if(cat === 'vse' || cats.includes(cat)){
+      marker.addTo(map);
+    } else {
+      map.removeLayer(marker);
+    }
+  });
+}
+
+/* ─── GALLERY FILTER ─── */
+function filterGal(cat, btn){
+  document.querySelectorAll('.gal-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.gal-item').forEach(item => {
+    const c = item.dataset.cat || '';
+    item.classList.toggle('hide', cat !== 'vse' && c !== cat);
+  });
+}
+
+/* ─── HOST MODAL ─── */
+function openHostModal(){
+  document.getElementById('host-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeHostModal(e, force){
+  if(force || (e && e.target === document.getElementById('host-modal'))){
+    document.getElementById('host-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+function switchPhase(id, btn){
+  document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.phase-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('phase-'+id).classList.add('active');
+}
+// close on Escape
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeHostModal(null,true);
+});
+</script>
+</body>
+</html>
