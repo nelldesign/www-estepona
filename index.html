@@ -84,7 +84,7 @@ h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;font-weight:400;line-height:1
 }
 .hero-bg{
   position:absolute;inset:0;
-  background:url('hero.jpg') 40% 40%/cover no-repeat,
+  background:url('photos/hero.jpg') 40% 40%/cover no-repeat,
     linear-gradient(135deg,#f0ebe4 0%,#e8dfd3 100%);
   /* Profi photo grade: brighter, softer contrast, warm whites */
   filter:brightness(1.18) contrast(.9) saturate(.85) sepia(.04);
@@ -638,6 +638,14 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
   .hero-h1{font-size:clamp(2rem,8vw,3.2rem)}
   .hero-script{font-size:1.3rem}
   .hero-eyebrow{font-size:.62rem}
+  .hero-overlay{background:
+    linear-gradient(to bottom,
+      rgba(247,243,238,.0) 0%,
+      rgba(247,243,238,.7) 45%,
+      rgba(247,243,238,.97) 70%
+    )
+  }
+  .hero-bg{background-position:50% 30%}
 
   .dostat-grid{grid-template-columns:1fr}
   .gal-grid{grid-template-columns:repeat(2,1fr)}
@@ -1482,13 +1490,19 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="gal-item" data-cat="apartman" onclick="openLightbox(4)">
         <img src="photos/gal-koupelna-1.jpg" alt="Koupelna"/>
       </div>
-      <div class="gal-item" data-cat="zahrada" onclick="openLightbox(5)">
+      <div class="gal-item" data-cat="apartman" onclick="openLightbox(5)">
+        <img src="photos/apartman-obyvak2.jpg" alt="Obývací pokoj 2"/>
+      </div>
+      <div class="gal-item" data-cat="apartman" onclick="openLightbox(6)">
+        <img src="photos/apartman-koupelna.jpg" alt="Koupelna 2"/>
+      </div>
+      <div class="gal-item" data-cat="zahrada" onclick="openLightbox(7)">
         <img src="photos/gal-zahrada-1.jpg" alt="Zahrada"/>
       </div>
-      <div class="gal-item" data-cat="zahrada" onclick="openLightbox(6)">
+      <div class="gal-item" data-cat="zahrada" onclick="openLightbox(8)">
         <img src="photos/gal-zahrada-2.jpg" alt="Terasa"/>
       </div>
-      <div class="gal-item wide" data-cat="komplex" onclick="openLightbox(7)">
+      <div class="gal-item wide" data-cat="komplex" onclick="openLightbox(9)">
         <img src="photos/gal-komplex-1.jpg" alt="ONE80 Suites"/>
       </div>
     </div>
@@ -1796,14 +1810,16 @@ document.addEventListener('keydown', e => {
 
 /* ─── LIGHTBOX ─── */
 const lbPhotos = [
-  {src:'photos/gal-apartman-1.jpg', alt:'Obývací pokoj'},
-  {src:'photos/gal-apartman-2.jpg', alt:'Kuchyň'},
-  {src:'photos/gal-apartman-3.jpg', alt:'Ložnice'},
-  {src:'photos/gal-apartman-4.jpg', alt:'Detail'},
-  {src:'photos/gal-koupelna-1.jpg', alt:'Koupelna'},
-  {src:'photos/gal-zahrada-1.jpg',  alt:'Zahrada'},
-  {src:'photos/gal-zahrada-2.jpg',  alt:'Terasa'},
-  {src:'photos/gal-komplex-1.jpg',  alt:'ONE80 Suites'},
+  {src:'photos/gal-apartman-1.jpg',  alt:'Obývací pokoj'},
+  {src:'photos/gal-apartman-2.jpg',  alt:'Kuchyň'},
+  {src:'photos/gal-apartman-3.jpg',  alt:'Ložnice'},
+  {src:'photos/gal-apartman-4.jpg',  alt:'Detail'},
+  {src:'photos/gal-koupelna-1.jpg',  alt:'Koupelna'},
+  {src:'photos/apartman-obyvak2.jpg', alt:'Obývací pokoj 2'},
+  {src:'photos/apartman-koupelna.jpg',alt:'Koupelna 2'},
+  {src:'photos/gal-zahrada-1.jpg',   alt:'Zahrada'},
+  {src:'photos/gal-zahrada-2.jpg',   alt:'Terasa'},
+  {src:'photos/gal-komplex-1.jpg',   alt:'ONE80 Suites'},
 ];
 let lbIdx = 0;
 function openLightbox(i){
