@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 /* ─────────────────────────────── VARIABLES ─── */
 :root{
@@ -473,7 +474,7 @@ section{padding:6rem 0}
   overflow:hidden;border-radius:3px;cursor:pointer;
   background:var(--beige)
 }
-.gal-item img,.gal-item .ph{aspect-ratio:1;object-fit:cover}
+.gal-item img{width:100%;height:100%;aspect-ratio:1;object-fit:cover;display:block;transition:transform .5s}
 .gal-item .ph{
   width:100%;aspect-ratio:1;
   background:linear-gradient(135deg,var(--beige),var(--sand));
@@ -481,10 +482,59 @@ section{padding:6rem 0}
   font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
   color:var(--sand);transition:transform .5s
 }
-.gal-item:hover .ph{transform:scale(1.04)}
+.gal-item:hover img{transform:scale(1.04)}
 .gal-item.wide{grid-column:span 2}
 .gal-item.tall{grid-row:span 2}
 .gal-item.hide{display:none}
+
+/* ─────────────────────────────── LUCIDE ICONS ─── */
+.lc{width:15px;height:15px;stroke-width:1.25;vertical-align:middle;display:inline-block;flex-shrink:0}
+.lc-sm{width:13px;height:13px;stroke-width:1.25;vertical-align:middle;display:inline-block;flex-shrink:0}
+.lc-lg{width:18px;height:18px;stroke-width:1.25;vertical-align:middle;display:inline-block;flex-shrink:0}
+.feat-tag .lc{margin-right:.3em}
+.manual-group-title .lc{margin-right:.5em}
+.trip-tab .lc{margin-right:.3em}
+.trip-card-cat .lc{margin-right:.25em}
+.trip-meta span .lc{margin-right:.2em}
+.phase-btn .lc{margin-right:.4em}
+.step-icon .lc{width:22px;height:22px}
+
+/* ─────────────────────────────── LIGHTBOX ─── */
+#lightbox{
+  display:none;position:fixed;inset:0;z-index:2000;
+  background:rgba(20,16,12,.92);
+  align-items:center;justify-content:center;padding:1rem
+}
+#lightbox.open{display:flex}
+#lightbox-img{
+  max-width:90vw;max-height:85vh;
+  object-fit:contain;border-radius:4px;
+  box-shadow:0 8px 60px rgba(0,0,0,.6);
+  user-select:none
+}
+#lightbox-close{
+  position:fixed;top:1.2rem;right:1.4rem;
+  background:rgba(255,255,255,.12);border:none;
+  color:#fff;cursor:pointer;border-radius:50%;
+  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  transition:background .2s
+}
+#lightbox-close:hover{background:rgba(255,255,255,.25)}
+.lb-arrow{
+  position:fixed;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,.12);border:none;
+  color:#fff;cursor:pointer;border-radius:50%;
+  width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;font-size:0
+}
+.lb-arrow:hover{background:rgba(255,255,255,.25)}
+#lb-prev{left:1rem}
+#lb-next{right:1rem}
+#lightbox-counter{
+  position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
+  color:rgba(255,255,255,.5);font-size:.78rem;letter-spacing:.12em;
+  font-family:'Jost',sans-serif
+}
 
 /* ─────────────────────────────── POČASÍ ─── */
 .weather-bar{
@@ -730,18 +780,18 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
         <p>Apartmán B se nachází v moderním rezidenčním komplexu ONE80 Suites přímo v Esteponě na Costa del Sol. Je naším druhým domovem — místem, kde se zpomalí čas a věci jsou najednou jinak.</p>
         <p>Prostorný obývací pokoj přechází do plně vybavené kuchyně. Světlý interiér v béžových tónech s detaily v olivové zelené. Přímo z obýváku vyjdete na soukromou zahradu.</p>
         <div class="apart-features">
-          <span class="feat-tag">🌿 Soukromá zahrada</span>
-          <span class="feat-tag">🚗 Vlastní garážové stání</span>
-          <span class="feat-tag">❄️ Klimatizace</span>
-          <span class="feat-tag">📡 Vysokorychlostní WiFi</span>
-          <span class="feat-tag">📺 Smart TV</span>
-          <span class="feat-tag">🍳 Plně vybavená kuchyně</span>
-          <span class="feat-tag">👨‍👩‍👧 Vhodné pro rodiny</span>
-          <span class="feat-tag">⛳ Ideální pro golfisty</span>
-          <span class="feat-tag">🏖️ Pláž 5 min</span>
-          <span class="feat-tag">🛁 2 koupelny</span>
-          <span class="feat-tag">🛏️ 2 ložnice</span>
-          <span class="feat-tag">🔒 Bezpečný komplex</span>
+          <span class="feat-tag"><i data-lucide="leaf" class="lc"></i> Soukromá zahrada</span>
+          <span class="feat-tag"><i data-lucide="car" class="lc"></i> Vlastní garážové stání</span>
+          <span class="feat-tag"><i data-lucide="wind" class="lc"></i> Klimatizace</span>
+          <span class="feat-tag"><i data-lucide="wifi" class="lc"></i> Vysokorychlostní WiFi</span>
+          <span class="feat-tag"><i data-lucide="tv" class="lc"></i> Smart TV</span>
+          <span class="feat-tag"><i data-lucide="utensils" class="lc"></i> Plně vybavená kuchyně</span>
+          <span class="feat-tag"><i data-lucide="users" class="lc"></i> Vhodné pro rodiny</span>
+          <span class="feat-tag"><i data-lucide="flag" class="lc"></i> Ideální pro golfisty</span>
+          <span class="feat-tag"><i data-lucide="umbrella" class="lc"></i> Pláž 5 min</span>
+          <span class="feat-tag"><i data-lucide="droplets" class="lc"></i> 2 koupelny</span>
+          <span class="feat-tag"><i data-lucide="bed" class="lc"></i> 2 ložnice</span>
+          <span class="feat-tag"><i data-lucide="shield" class="lc"></i> Bezpečný komplex</span>
         </div>
         <p style="color:var(--text-l);font-size:.9rem">Estepona je jedno z nejautentičtějších míst celé Costa del Sol. Bílé uličky posypané květinami, rybářský přístav, nádherné pláže a desítky golfových hřišť v okolí.</p>
       </div>
@@ -833,7 +883,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- PŘÍJEZD -->
     <div class="manual-group">
-      <div class="manual-group-title">🚗 Před příjezdem & příjezd</div>
+      <div class="manual-group-title"><i data-lucide="car" class="lc-lg"></i> Před příjezdem & příjezd</div>
       <div class="manual-cards">
 
         <div class="manual-card" onclick="toggleMC(this)">
@@ -869,7 +919,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- OBÝVÁK & TERASA -->
     <div class="manual-group">
-      <div class="manual-group-title">🛋️ Obývací pokoj & terasa</div>
+      <div class="manual-group-title"><i data-lucide="sofa" class="lc-lg"></i> Obývací pokoj & terasa</div>
       <div class="manual-cards">
 
         <div class="manual-card" onclick="toggleMC(this)">
@@ -905,7 +955,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- KUCHYNĚ -->
     <div class="manual-group">
-      <div class="manual-group-title">🍳 Kuchyně</div>
+      <div class="manual-group-title"><i data-lucide="utensils" class="lc-lg"></i> Kuchyně</div>
       <div class="manual-cards">
         <div class="manual-card" onclick="toggleMC(this)">
           <div class="mc-header">
@@ -931,7 +981,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- LOŽNICE & KOUPELNY -->
     <div class="manual-group">
-      <div class="manual-group-title">🛏️ Ložnice & koupelny</div>
+      <div class="manual-group-title"><i data-lucide="bed" class="lc-lg"></i> Ložnice & koupelny</div>
       <div class="manual-cards">
         <div class="manual-card" onclick="toggleMC(this)">
           <div class="mc-header">
@@ -958,7 +1008,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- TECHNIKA -->
     <div class="manual-group">
-      <div class="manual-group-title">📡 WiFi & technika</div>
+      <div class="manual-group-title"><i data-lucide="wifi" class="lc-lg"></i> WiFi & technika</div>
       <div class="manual-cards">
         <div class="manual-card" onclick="toggleMC(this)">
           <div class="mc-header">
@@ -985,7 +1035,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- PŘED ODJEZDEM -->
     <div class="manual-group">
-      <div class="manual-group-title">✅ Před odjezdem</div>
+      <div class="manual-group-title"><i data-lucide="check-circle" class="lc-lg"></i> Před odjezdem</div>
       <div class="manual-cards">
         <div class="manual-card" onclick="toggleMC(this)">
           <div class="mc-header">
@@ -1030,13 +1080,13 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <div class="trip-tabs" id="tripTabs">
       <button class="trip-tab active" onclick="filterTrips('vse',this)">Vše</button>
-      <button class="trip-tab" onclick="filterTrips('plaze',this)">🏖️ Pláže</button>
-      <button class="trip-tab" onclick="filterTrips('golf',this)">⛳ Golf</button>
-      <button class="trip-tab" onclick="filterTrips('restaurace',this)">🍷 Restaurace</button>
-      <button class="trip-tab" onclick="filterTrips('historicka',this)">🏛️ Historická města</button>
-      <button class="trip-tab" onclick="filterTrips('priroda',this)">🌿 Příroda</button>
-      <button class="trip-tab" onclick="filterTrips('nakupy',this)">🛍️ Nákupy</button>
-      <button class="trip-tab" onclick="filterTrips('vylety',this)">🗺️ Jednodenní výlety</button>
+      <button class="trip-tab" onclick="filterTrips('plaze',this)"><i data-lucide="umbrella" class="lc-sm"></i> Pláže</button>
+      <button class="trip-tab" onclick="filterTrips('golf',this)"><i data-lucide="flag" class="lc-sm"></i> Golf</button>
+      <button class="trip-tab" onclick="filterTrips('restaurace',this)"><i data-lucide="wine" class="lc-sm"></i> Restaurace</button>
+      <button class="trip-tab" onclick="filterTrips('historicka',this)"><i data-lucide="landmark" class="lc-sm"></i> Historická města</button>
+      <button class="trip-tab" onclick="filterTrips('priroda',this)"><i data-lucide="leaf" class="lc-sm"></i> Příroda</button>
+      <button class="trip-tab" onclick="filterTrips('nakupy',this)"><i data-lucide="shopping-bag" class="lc-sm"></i> Nákupy</button>
+      <button class="trip-tab" onclick="filterTrips('vylety',this)"><i data-lucide="map" class="lc-sm"></i> Jednodenní výlety</button>
     </div>
 
     <div id="map"></div>
@@ -1046,10 +1096,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="plaze" data-lat="36.4220" data-lng="-5.1510">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8dfe0,#9cb8ba)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">🏖️ Pláž</div>
+          <div class="trip-card-cat"><i data-lucide="umbrella" class="lc-sm"></i> Pláž</div>
           <h3>Playa de la Rada</h3>
           <p>Největší pláž v Esteponě — dlouhá, čistá, s promenádou lemovanou palmami.</p>
-          <div class="trip-meta"><span>📍 3 min</span><span>🚗 1,5 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 3 min</span><span><i data-lucide="car" class="lc-sm"></i> 1,5 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=Playa+de+la+Rada+Estepona" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=Playa+de+la+Rada+Estepona" target="_blank">Waze</a>
@@ -1060,10 +1110,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="plaze" data-lat="36.4300" data-lng="-5.1400">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#b5d5c5,#8cb5a5)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">🏖️ Pláž</div>
+          <div class="trip-card-cat"><i data-lucide="umbrella" class="lc-sm"></i> Pláž</div>
           <h3>Playa El Cristo</h3>
           <p>Útulná zátoka u přístavu — oblíbená pro klidnější plavání a snídaně v přilehlých kavárnách.</p>
-          <div class="trip-meta"><span>📍 5 min</span><span>🚗 2 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 5 min</span><span><i data-lucide="car" class="lc-sm"></i> 2 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=Playa+El+Cristo+Estepona" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=Playa+El+Cristo+Estepona" target="_blank">Waze</a>
@@ -1075,10 +1125,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="golf" data-lat="36.4470" data-lng="-5.1650">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8d8b8,#98b885)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">⛳ Golf</div>
+          <div class="trip-card-cat"><i data-lucide="flag" class="lc-sm"></i> Golf</div>
           <h3>Real Club de Golf Estepona</h3>
           <p>Impozantní hřiště s výhledy na moře a Gibraltar. Oblíbené i mezi profesionály.</p>
-          <div class="trip-meta"><span>📍 10 min</span><span>🚗 7 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 10 min</span><span><i data-lucide="car" class="lc-sm"></i> 7 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=Real+Club+Golf+Estepona" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=Real+Club+Golf+Estepona" target="_blank">Waze</a>
@@ -1089,10 +1139,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="golf" data-lat="36.4650" data-lng="-5.1900">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#d0e0c0,#a0c090)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">⛳ Golf</div>
+          <div class="trip-card-cat"><i data-lucide="flag" class="lc-sm"></i> Golf</div>
           <h3>La Resina Golf</h3>
           <p>Moderní hřiště s panoramatickým výhledem, perfektní údržba a přátelský personál.</p>
-          <div class="trip-meta"><span>📍 15 min</span><span>🚗 12 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 15 min</span><span><i data-lucide="car" class="lc-sm"></i> 12 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=La+Resina+Golf+Estepona" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=La+Resina+Golf+Estepona" target="_blank">Waze</a>
@@ -1104,10 +1154,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="historicka" data-lat="36.4253" data-lng="-5.1462">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#f0e0c8,#d0b898)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">🏛️ Historické město</div>
+          <div class="trip-card-cat"><i data-lucide="landmark" class="lc-sm"></i> Historické město</div>
           <h3>Estepona Casco Antiguo</h3>
           <p>Bílé uličky, květinová výzdoba, rybářský přístav a autentická atmosféra. Povinnost!</p>
-          <div class="trip-meta"><span>📍 5 min</span><span>🚗 2 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 5 min</span><span><i data-lucide="car" class="lc-sm"></i> 2 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=Casco+Antiguo+Estepona" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=Casco+Antiguo+Estepona" target="_blank">Waze</a>
@@ -1118,10 +1168,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="historicka vylety" data-lat="36.5100" data-lng="-4.8834">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#e8d8c0,#c8a880)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">🏛️ Historické město · Výlet</div>
+          <div class="trip-card-cat"><i data-lucide="landmark" class="lc-sm"></i> Historické město · Výlet</div>
           <h3>Marbella</h3>
           <p>Ikonická Puerto Banús, staré město s náměstím Naranjos a skvělé restaurace.</p>
-          <div class="trip-meta"><span>📍 40 min</span><span>🚗 42 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 40 min</span><span><i data-lucide="car" class="lc-sm"></i> 42 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=Marbella+Old+Town" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=Marbella" target="_blank">Waze</a>
@@ -1133,10 +1183,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="vylety" data-lat="36.7464" data-lng="-5.1616">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#d8c8b8,#b8a898)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">🗺️ Jednodenní výlet</div>
+          <div class="trip-card-cat"><i data-lucide="map" class="lc-sm"></i> Jednodenní výlet</div>
           <h3>Ronda</h3>
           <p>Skalní město se slavným mostem Puente Nuevo. Jeden z nejpůsobivějších výhledů ve Španělsku.</p>
-          <div class="trip-meta"><span>📍 90 min</span><span>🚗 100 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 90 min</span><span><i data-lucide="car" class="lc-sm"></i> 100 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=Ronda+Spain" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=Ronda+Malaga" target="_blank">Waze</a>
@@ -1147,10 +1197,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="vylety" data-lat="36.1408" data-lng="-5.3536">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8d8e8,#98a8b8)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">🗺️ Jednodenní výlet</div>
+          <div class="trip-card-cat"><i data-lucide="map" class="lc-sm"></i> Jednodenní výlet</div>
           <h3>Gibraltar</h3>
           <p>Britský teritorium s ikonickou skálou, opicemi a duty-free nakupováním. Jedinečná zkušenost.</p>
-          <div class="trip-meta"><span>📍 60 min</span><span>🚗 55 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 60 min</span><span><i data-lucide="car" class="lc-sm"></i> 55 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=Gibraltar" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=Gibraltar" target="_blank">Waze</a>
@@ -1162,10 +1212,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="trip-card visible" data-cat="nakupy" data-lat="36.5000" data-lng="-4.9100">
         <div class="trip-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#e0d0e8,#b8a8c8)"></div></div>
         <div class="trip-card-body">
-          <div class="trip-card-cat">🛍️ Nákupy</div>
+          <div class="trip-card-cat"><i data-lucide="shopping-bag" class="lc-sm"></i> Nákupy</div>
           <h3>La Cañada (Marbella)</h3>
           <p>Největší obchodní centrum na Costa del Sol. Zara, H&M, El Corte Inglés, kina a restaurace.</p>
-          <div class="trip-meta"><span>📍 35 min</span><span>🚗 35 km</span></div>
+          <div class="trip-meta"><span><i data-lucide="map-pin" class="lc-sm"></i> 35 min</span><span><i data-lucide="car" class="lc-sm"></i> 35 km</span></div>
           <div class="trip-nav">
             <a href="https://maps.google.com/?q=La+Canada+Shopping+Marbella" target="_blank">Google Maps</a>
             <a href="https://waze.com/ul?q=La+Cañada+Marbella" target="_blank">Waze</a>
@@ -1187,7 +1237,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="fav-card">
         <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#e8c8b0,#c8a880)"></div></div>
         <div class="fav-card-body">
-          <div class="fav-card-emoji">☕</div>
+          <div class="fav-card-emoji"><i data-lucide="coffee" class="lc" style="width:28px;height:28px;stroke-width:1"></i></div>
           <h3>Naše oblíbená kavárna</h3>
           <p>Tady si dáváme první ranní kávu s výhledem na moře. Croissanty jsou tady nejlepší v celé Esteponě.</p>
           <span class="fav-tag">Snídaně</span>
@@ -1198,7 +1248,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="fav-card">
         <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8d8c0,#a0b890)"></div></div>
         <div class="fav-card-body">
-          <div class="fav-card-emoji">🍷</div>
+          <div class="fav-card-emoji"><i data-lucide="wine" class="lc" style="width:28px;height:28px;stroke-width:1"></i></div>
           <h3>Naše nejoblíbenější restaurace</h3>
           <p>Sem chodíme pokaždé, když sem přijedeme. Čerstvé ryby, výborné víno a příjemná terasa.</p>
           <span class="fav-tag">Oběd & večeře</span>
@@ -1209,7 +1259,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="fav-card">
         <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c0d8e8,#90b0c8)"></div></div>
         <div class="fav-card-body">
-          <div class="fav-card-emoji">🌅</div>
+          <div class="fav-card-emoji"><i data-lucide="sunrise" class="lc" style="width:28px;height:28px;stroke-width:1"></i></div>
           <h3>Nejlepší západ slunce</h3>
           <p>Jedno místo na promenádě, odkud je západ slunce nad mořem naprosto neuvěřitelný.</p>
           <span class="fav-tag">Večer</span>
@@ -1220,7 +1270,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="fav-card">
         <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#d0c8b8,#b0a898)"></div></div>
         <div class="fav-card-body">
-          <div class="fav-card-emoji">🏖️</div>
+          <div class="fav-card-emoji"><i data-lucide="umbrella" class="lc" style="width:28px;height:28px;stroke-width:1"></i></div>
           <h3>Naše oblíbená pláž</h3>
           <p>Klidnější část pláže, kde není příliš lidí i v létě. Výborný chiringuito hned vedle.</p>
           <span class="fav-tag">Pláž</span>
@@ -1231,7 +1281,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="fav-card">
         <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#c8d0c0,#a8b8a0)"></div></div>
         <div class="fav-card-body">
-          <div class="fav-card-emoji">⛳</div>
+          <div class="fav-card-emoji"><i data-lucide="flag" class="lc" style="width:28px;height:28px;stroke-width:1"></i></div>
           <h3>Naše oblíbené hřiště</h3>
           <p>Skvělé fairwaye, výhledy na moře a příjemný golfový klub. Vždy se sem těšíme.</p>
           <span class="fav-tag">Golf</span>
@@ -1242,7 +1292,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="fav-card">
         <div class="fav-card-img"><div class="ph" style="height:100%;background:linear-gradient(135deg,#e8d8c8,#c8b8a8)"></div></div>
         <div class="fav-card-body">
-          <div class="fav-card-emoji">🚗</div>
+          <div class="fav-card-emoji"><i data-lucide="car" class="lc" style="width:28px;height:28px;stroke-width:1"></i></div>
           <h3>Kam bereme návštěvy</h3>
           <p>Ronda a Gibraltar — dva výlety, které nikoho nikdy nezklame. Ronda je absolutní must.</p>
           <span class="fav-tag">Výlet</span>
@@ -1308,7 +1358,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
           <div class="kontakt-info"><strong>Elektrikář</strong><span>Obsah bude doplněn</span></div>
         </div>
         <div class="kontakt-item">
-          <div class="kontakt-av">❄️</div>
+          <div class="kontakt-av"><i data-lucide="wind" class="lc" style="width:20px;height:20px"></i></div>
           <div class="kontakt-info"><strong>Servis klimatizace</strong><span>Obsah bude doplněn</span></div>
         </div>
         <div class="kontakt-item">
@@ -1320,7 +1370,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <div class="kontakt-group">
         <div class="kontakt-group-title">🏥 Zdraví</div>
         <div class="kontakt-item">
-          <div class="kontakt-av">👨‍⚕️</div>
+          <div class="kontakt-av"><i data-lucide="stethoscope" class="lc" style="width:20px;height:20px"></i></div>
           <div class="kontakt-info"><strong>Praktický lékař</strong><span>Obsah bude doplněn</span></div>
         </div>
         <div class="kontakt-item">
@@ -1328,7 +1378,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
           <div class="kontakt-info"><strong>Zubař</strong><span>Obsah bude doplněn</span></div>
         </div>
         <div class="kontakt-item">
-          <div class="kontakt-av">💊</div>
+          <div class="kontakt-av"><i data-lucide="pill" class="lc" style="width:20px;height:20px"></i></div>
           <div class="kontakt-info"><strong>Lékárna</strong><span>Farmacia más cercana</span></div>
         </div>
         <div class="kontakt-item">
@@ -1414,65 +1464,51 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <button class="gal-tab" onclick="filterGal('apartman',this)">Apartmán</button>
       <button class="gal-tab" onclick="filterGal('zahrada',this)">Zahrada</button>
       <button class="gal-tab" onclick="filterGal('komplex',this)">Komplex</button>
-      <button class="gal-tab" onclick="filterGal('plaze',this)">Pláže</button>
-      <button class="gal-tab" onclick="filterGal('golf',this)">Golf</button>
-      <button class="gal-tab" onclick="filterGal('estepona',this)">Estepona</button>
-      <button class="gal-tab" onclick="filterGal('okoli',this)">Okolí</button>
     </div>
 
     <div class="gal-grid" id="galGrid">
-      <!-- photos/xxx.jpg — při nahrání fotek se obrázky zobrazí automaticky -->
-      <div class="gal-item wide tall" data-cat="apartman">
-        <img src="photos/gal-apartman-1.jpg" alt="Obývací pokoj" onerror="this.style.display='none'"/>
-        <div class="ph">Obývací pokoj</div>
+      <div class="gal-item wide tall" data-cat="apartman" onclick="openLightbox(0)">
+        <img src="photos/gal-apartman-1.jpg" alt="Obývací pokoj"/>
       </div>
-      <div class="gal-item" data-cat="apartman">
-        <img src="photos/gal-apartman-2.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Kuchyň</div>
+      <div class=gal-item data-cat="apartman" onclick="openLightbox(1)">
+        <img src="photos/gal-apartman-2.jpg" alt="Kuchyň"/>
       </div>
-      <div class="gal-item" data-cat="apartman">
-        <img src="photos/gal-apartman-3.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Ložnice</div>
+      <div class="gal-item" data-cat="apartman" onclick="openLightbox(2)">
+        <img src="photos/gal-apartman-3.jpg" alt="Ložnice"/>
       </div>
-      <div class="gal-item" data-cat="zahrada">
-        <img src="photos/gal-zahrada-1.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Zahrada</div>
+      <div class="gal-item" data-cat="apartman" onclick="openLightbox(3)">
+        <img src="photos/gal-apartman-4.jpg" alt="Detail"/>
       </div>
-      <div class="gal-item" data-cat="zahrada">
-        <img src="photos/gal-zahrada-2.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Terasa</div>
+      <div class="gal-item" data-cat="apartman" onclick="openLightbox(4)">
+        <img src="photos/gal-koupelna-1.jpg" alt="Koupelna"/>
       </div>
-      <div class="gal-item wide" data-cat="komplex">
-        <img src="photos/gal-komplex-1.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph" style="aspect-ratio:2/1">ONE80 Suites</div>
+      <div class="gal-item" data-cat="zahrada" onclick="openLightbox(5)">
+        <img src="photos/gal-zahrada-1.jpg" alt="Zahrada"/>
       </div>
-      <div class="gal-item" data-cat="plaze">
-        <img src="gal-plaz-1.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Pláž</div>
+      <div class="gal-item" data-cat="zahrada" onclick="openLightbox(6)">
+        <img src="photos/gal-zahrada-2.jpg" alt="Terasa"/>
       </div>
-      <div class="gal-item" data-cat="plaze">
-        <img src="gal-plaz-2.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Moře</div>
-      </div>
-      <div class="gal-item" data-cat="golf">
-        <img src="gal-golf-1.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Golf</div>
-      </div>
-      <div class="gal-item" data-cat="estepona">
-        <img src="gal-estepona-1.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Estepona</div>
-      </div>
-      <div class="gal-item" data-cat="estepona">
-        <img src="gal-estepona-2.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Přístav</div>
-      </div>
-      <div class="gal-item" data-cat="okoli">
-        <img src="gal-okoli-1.jpg" alt="" onerror="this.style.display='none'"/>
-        <div class="ph">Okolí</div>
+      <div class="gal-item wide" data-cat="komplex" onclick="openLightbox(7)">
+        <img src="photos/gal-komplex-1.jpg" alt="ONE80 Suites"/>
       </div>
     </div>
   </div>
 </section>
+
+<!-- ── LIGHTBOX ── -->
+<div id="lightbox" onclick="closeLightbox(event)">
+  <button id="lightbox-close" onclick="closeLightbox(null,true)" aria-label="Zavřít">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <button class="lb-arrow" id="lb-prev" onclick="lbNav(-1)" aria-label="Předchozí">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <img id="lightbox-img" src="" alt=""/>
+  <button class="lb-arrow" id="lb-next" onclick="lbNav(1)" aria-label="Další">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <div id="lightbox-counter"></div>
+</div>
 
 <!-- ── FOOTER ── -->
 <footer>
@@ -1496,10 +1532,10 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <span class="modal-sub">vše krok za krokem</span>
 
       <div class="modal-phases">
-        <button class="phase-btn active" onclick="switchPhase('pred-cestou',this)">✈️ Před cestou</button>
+        <button class="phase-btn active" onclick="switchPhase('pred-cestou',this)"><i data-lucide="plane" class="lc"></i> Před cestou</button>
         <button class="phase-btn" onclick="switchPhase('po-prijezdu',this)">🏠 Po příjezdu</button>
-        <button class="phase-btn" onclick="switchPhase('behem-pobytu',this)">☀️ Během pobytu</button>
-        <button class="phase-btn" onclick="switchPhase('pred-odjezdem',this)">✅ Před odjezdem</button>
+        <button class="phase-btn" onclick="switchPhase('behem-pobytu',this)"><i data-lucide="sun" class="lc"></i> Během pobytu</button>
+        <button class="phase-btn" onclick="switchPhase('pred-odjezdem',this)"><i data-lucide="check-circle" class="lc"></i> Před odjezdem</button>
       </div>
 
       <!-- Před cestou -->
@@ -1581,7 +1617,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
           </div>
         </div>
         <div class="phase-step">
-          <div class="step-num">🗺️</div>
+          <div class="step-num"><i data-lucide="map" class="lc" style="width:22px;height:22px;stroke-width:1.25"></i></div>
           <div class="step-body">
             <strong>Výlety & doporučení</strong>
             <p>Naše tipy najdete v sekci <a href="#kam-na-vylet" onclick="closeHostModal(null,true)" style="color:var(--olive)">Kam na výlet</a> a <a href="#oblibena-mista" onclick="closeHostModal(null,true)" style="color:var(--olive)">Oblíbená místa</a>.</p>
@@ -1592,7 +1628,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       <!-- Před odjezdem -->
       <div class="phase-content" id="phase-pred-odjezdem">
         <div class="phase-step">
-          <div class="step-num">✅</div>
+          <div class="step-num"><i data-lucide="check-circle" class="lc" style="width:22px;height:22px;stroke-width:1.25"></i></div>
           <div class="step-body">
             <strong>Odjezdový checklist</strong>
             <p>Zkontrolujte před zavřením dveří:</p>
@@ -1753,8 +1789,49 @@ function switchPhase(id, btn){
 }
 // close on Escape
 document.addEventListener('keydown', e => {
-  if(e.key === 'Escape') closeHostModal(null,true);
+  if(e.key === 'Escape'){ closeHostModal(null,true); closeLightbox(null,true); }
+  if(e.key === 'ArrowLeft') lbNav(-1);
+  if(e.key === 'ArrowRight') lbNav(1);
 });
+
+/* ─── LIGHTBOX ─── */
+const lbPhotos = [
+  {src:'photos/gal-apartman-1.jpg', alt:'Obývací pokoj'},
+  {src:'photos/gal-apartman-2.jpg', alt:'Kuchyň'},
+  {src:'photos/gal-apartman-3.jpg', alt:'Ložnice'},
+  {src:'photos/gal-apartman-4.jpg', alt:'Detail'},
+  {src:'photos/gal-koupelna-1.jpg', alt:'Koupelna'},
+  {src:'photos/gal-zahrada-1.jpg',  alt:'Zahrada'},
+  {src:'photos/gal-zahrada-2.jpg',  alt:'Terasa'},
+  {src:'photos/gal-komplex-1.jpg',  alt:'ONE80 Suites'},
+];
+let lbIdx = 0;
+function openLightbox(i){
+  lbIdx = i;
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  img.src = lbPhotos[lbIdx].src;
+  img.alt = lbPhotos[lbIdx].alt;
+  document.getElementById('lightbox-counter').textContent = (lbIdx+1)+' / '+lbPhotos.length;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e, force){
+  if(!force && e && e.target !== document.getElementById('lightbox') && e.target !== document.getElementById('lightbox-close')) return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function lbNav(dir){
+  if(!document.getElementById('lightbox').classList.contains('open')) return;
+  lbIdx = (lbIdx + dir + lbPhotos.length) % lbPhotos.length;
+  const img = document.getElementById('lightbox-img');
+  img.src = lbPhotos[lbIdx].src;
+  img.alt = lbPhotos[lbIdx].alt;
+  document.getElementById('lightbox-counter').textContent = (lbIdx+1)+' / '+lbPhotos.length;
+}
+
+/* ─── LUCIDE ICONS ─── */
+lucide.createIcons();
 </script>
 </body>
 </html>
