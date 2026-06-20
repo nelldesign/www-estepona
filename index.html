@@ -59,6 +59,19 @@ h1,h2,h3,h4{font-family:'Cinzel',serif;font-weight:300;line-height:1.2;letter-sp
 .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
 .hamburger span{display:block;width:22px;height:1.5px;background:var(--text);transition:all .3s}
 
+/* ─────────────────────────────── LANG SWITCHER ─── */
+.lang-sw{display:flex;align-items:center;gap:.25rem;margin-right:.7rem}
+.lang-btn{
+  font-size:.63rem;letter-spacing:.1em;font-family:'Jost',sans-serif;font-weight:400;
+  padding:.28rem .48rem;border:1px solid rgba(92,122,82,.22);
+  border-radius:2px;background:transparent;color:var(--text-l);
+  cursor:pointer;transition:all .2s;line-height:1
+}
+.lang-btn:hover{border-color:var(--gold);color:var(--gold)}
+.lang-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(200,160,74,.09)}
+.mobile-nav .lang-sw{margin:1rem 0 0;gap:.5rem}
+.mobile-nav .lang-btn{font-size:.8rem;padding:.45rem .7rem}
+
 /* mobile nav overlay */
 .mobile-nav{
   display:none;position:fixed;inset:0;z-index:800;
@@ -634,6 +647,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
   #nav .nav-links,.nav-btn{display:none}
   .hamburger{display:flex}
   #nav{padding:0 1.5rem}
+  #langSw{display:none}
 
   .hero-content{padding:2rem 1.5rem 4.5rem}
   .hero-h1{font-size:clamp(2rem,8vw,3.2rem)}
@@ -700,15 +714,20 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
     Náš druhý domov
   </div>
   <ul class="nav-links" id="navLinks">
-    <li><a href="#domov">Domů</a></li>
-    <li><a href="#apartman">O apartmánu</a></li>
-    <li><a href="#jak-se-dostat">Jak se dostat</a></li>
-    <li><a href="#manual" class="nav-btn">Manuál</a></li>
-    <li><a href="#kam-na-vylet">Kam na výlet</a></li>
-    <li><a href="#oblibena-mista">Oblíbená místa</a></li>
-    <li><a href="#kontakty">Kontakty</a></li>
-    <li><a href="#galerie">Galerie</a></li>
+    <li><a href="#domov" data-i18n="nav.home">Domů</a></li>
+    <li><a href="#apartman" data-i18n="nav.apart">O apartmánu</a></li>
+    <li><a href="#jak-se-dostat" data-i18n="nav.how">Jak se dostat</a></li>
+    <li><a href="#manual" class="nav-btn" data-i18n="nav.manual">Manuál</a></li>
+    <li><a href="#kam-na-vylet" data-i18n="nav.trips">Kam na výlet</a></li>
+    <li><a href="#oblibena-mista" data-i18n="nav.places">Oblíbená místa</a></li>
+    <li><a href="#kontakty" data-i18n="nav.contacts">Kontakty</a></li>
+    <li><a href="#galerie" data-i18n="nav.gallery">Galerie</a></li>
   </ul>
+  <div class="lang-sw" id="langSw">
+    <button class="lang-btn active" onclick="setLang('cs')">CS</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('es')">ES</button>
+  </div>
   <div class="hamburger" id="hamburger" onclick="openMobileNav()">
     <span></span><span></span><span></span>
   </div>
@@ -717,14 +736,19 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 <!-- mobile nav -->
 <div class="mobile-nav" id="mobileNav">
   <span class="close-btn" onclick="closeMobileNav()">×</span>
-  <a href="#domov" onclick="closeMobileNav()">Domů</a>
-  <a href="#apartman" onclick="closeMobileNav()">O apartmánu</a>
-  <a href="#jak-se-dostat" onclick="closeMobileNav()">Jak se dostat</a>
-  <a href="#manual" onclick="closeMobileNav()">Manuál</a>
-  <a href="#kam-na-vylet" onclick="closeMobileNav()">Kam na výlet</a>
-  <a href="#oblibena-mista" onclick="closeMobileNav()">Oblíbená místa</a>
-  <a href="#kontakty" onclick="closeMobileNav()">Kontakty</a>
-  <a href="#galerie" onclick="closeMobileNav()">Galerie</a>
+  <a href="#domov" onclick="closeMobileNav()" data-i18n="nav.home">Domů</a>
+  <a href="#apartman" onclick="closeMobileNav()" data-i18n="nav.apart">O apartmánu</a>
+  <a href="#jak-se-dostat" onclick="closeMobileNav()" data-i18n="nav.how">Jak se dostat</a>
+  <a href="#manual" onclick="closeMobileNav()" data-i18n="nav.manual">Manuál</a>
+  <a href="#kam-na-vylet" onclick="closeMobileNav()" data-i18n="nav.trips">Kam na výlet</a>
+  <a href="#oblibena-mista" onclick="closeMobileNav()" data-i18n="nav.places">Oblíbená místa</a>
+  <a href="#kontakty" onclick="closeMobileNav()" data-i18n="nav.contacts">Kontakty</a>
+  <a href="#galerie" onclick="closeMobileNav()" data-i18n="nav.gallery">Galerie</a>
+  <div class="lang-sw">
+    <button class="lang-btn active" onclick="setLang('cs');closeMobileNav()">CS</button>
+    <button class="lang-btn" onclick="setLang('en');closeMobileNav()">EN</button>
+    <button class="lang-btn" onclick="setLang('es');closeMobileNav()">ES</button>
+  </div>
 </div>
 
 <!-- ── HERO ── -->
@@ -732,26 +756,26 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
   <div class="hero-bg" id="heroBg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <p class="hero-eyebrow">Estepona · Costa del Sol · Španělsko</p>
-    <h1 class="hero-h1">Vítejte v našem<br>druhém domově</h1>
-    <span class="hero-script">kde slunce nikdy neodchází</span>
-    <p class="hero-tagline">Více slunce&thinsp;·&thinsp;Více klidu&thinsp;·&thinsp;Více života</p>
+    <p class="hero-eyebrow" data-i18n="hero.eyebrow">Estepona · Costa del Sol · Španělsko</p>
+    <h1 class="hero-h1" data-i18n-html="hero.h1">Vítejte v našem<br>druhém domově</h1>
+    <span class="hero-script" data-i18n="hero.script">kde slunce nikdy neodchází</span>
+    <p class="hero-tagline" data-i18n="hero.tagline">Více slunce&thinsp;·&thinsp;Více klidu&thinsp;·&thinsp;Více života</p>
     <div class="hero-gold-line"></div>
     <div class="hero-ctas">
       <button class="btn-host" onclick="openHostModal()">
         <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Jsem host
+        <span data-i18n="hero.btn.host">Jsem host</span>
       </button>
-      <a href="#apartman" class="btn-outline">Poznejte náš domov</a>
+      <a href="#apartman" class="btn-outline" data-i18n="hero.btn.explore">Poznejte náš domov</a>
     </div>
   </div>
-  <div class="hero-scroll">Scrolluj</div>
+  <div class="hero-scroll" data-i18n="hero.scroll">Scrolluj</div>
 </section>
 
 <!-- ── POČASÍ BAR ── -->
 <div class="weather-bar" id="weatherBar">
   <div class="w-item">
-    <span class="w-label">Estepona · aktuálně</span>
+    <span class="w-label" data-i18n="weather.now">Estepona · aktuálně</span>
   </div>
   <div class="w-item">
     <span id="w-icon" style="font-size:1.4rem">☀️</span>
@@ -759,11 +783,11 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
     <span>°C</span>
   </div>
   <div class="w-item">
-    <span class="w-label">vítr</span>
+    <span class="w-label" data-i18n="weather.wind">vítr</span>
     <span id="w-wind">—</span>&nbsp;km/h
   </div>
   <div class="w-item">
-    <span class="w-label">vlhkost</span>
+    <span class="w-label" data-i18n="weather.hum">vlhkost</span>
     <span id="w-hum">—</span>&nbsp;%
   </div>
 </div>
@@ -784,26 +808,26 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
         </div>
       </div>
       <div class="apart-text">
-        <div class="sec-label">One80 Suites · Estepona</div>
-        <h2 class="sec-h2">Náš apartmán</h2>
-        <span class="sec-script">světlý, vzdušný a plný pohody</span>
-        <p>Apartmán B se nachází v moderním rezidenčním komplexu ONE80 Suites přímo v Esteponě na Costa del Sol. Je naším druhým domovem — místem, kde se zpomalí čas a věci jsou najednou jinak.</p>
-        <p>Prostorný obývací pokoj přechází do plně vybavené kuchyně. Světlý interiér v béžových tónech s detaily v olivové zelené. Přímo z obýváku vyjdete na soukromou zahradu.</p>
+        <div class="sec-label" data-i18n="apt.label">One80 Suites · Estepona</div>
+        <h2 class="sec-h2" data-i18n="apt.h2">Náš apartmán</h2>
+        <span class="sec-script" data-i18n="apt.script">světlý, vzdušný a plný pohody</span>
+        <p data-i18n="apt.p1">Apartmán B se nachází v moderním rezidenčním komplexu ONE80 Suites přímo v Esteponě na Costa del Sol. Je naším druhým domovem — místem, kde se zpomalí čas a věci jsou najednou jinak.</p>
+        <p data-i18n="apt.p2">Prostorný obývací pokoj přechází do plně vybavené kuchyně. Světlý interiér v béžových tónech s detaily v olivové zelené. Přímo z obýváku vyjdete na soukromou zahradu.</p>
         <div class="apart-features">
-          <span class="feat-tag"><i data-lucide="leaf" class="lc"></i> Soukromá zahrada</span>
-          <span class="feat-tag"><i data-lucide="car" class="lc"></i> Vlastní garážové stání</span>
-          <span class="feat-tag"><i data-lucide="wind" class="lc"></i> Klimatizace</span>
-          <span class="feat-tag"><i data-lucide="wifi" class="lc"></i> Vysokorychlostní WiFi</span>
-          <span class="feat-tag"><i data-lucide="tv" class="lc"></i> Smart TV</span>
-          <span class="feat-tag"><i data-lucide="utensils" class="lc"></i> Plně vybavená kuchyně</span>
-          <span class="feat-tag"><i data-lucide="users" class="lc"></i> Vhodné pro rodiny</span>
-          <span class="feat-tag"><i data-lucide="flag" class="lc"></i> Ideální pro golfisty</span>
-          <span class="feat-tag"><i data-lucide="umbrella" class="lc"></i> Pláž 5 min</span>
-          <span class="feat-tag"><i data-lucide="droplets" class="lc"></i> 2 koupelny</span>
-          <span class="feat-tag"><i data-lucide="bed" class="lc"></i> 2 ložnice</span>
-          <span class="feat-tag"><i data-lucide="shield" class="lc"></i> Bezpečný komplex</span>
+          <span class="feat-tag"><i data-lucide="leaf" class="lc"></i> <span data-i18n="apt.feat.garden">Soukromá zahrada</span></span>
+          <span class="feat-tag"><i data-lucide="car" class="lc"></i> <span data-i18n="apt.feat.garage">Vlastní garážové stání</span></span>
+          <span class="feat-tag"><i data-lucide="wind" class="lc"></i> <span data-i18n="apt.feat.ac">Klimatizace</span></span>
+          <span class="feat-tag"><i data-lucide="wifi" class="lc"></i> <span data-i18n="apt.feat.wifi">Vysokorychlostní WiFi</span></span>
+          <span class="feat-tag"><i data-lucide="tv" class="lc"></i> <span data-i18n="apt.feat.tv">Smart TV</span></span>
+          <span class="feat-tag"><i data-lucide="utensils" class="lc"></i> <span data-i18n="apt.feat.kitchen">Plně vybavená kuchyně</span></span>
+          <span class="feat-tag"><i data-lucide="users" class="lc"></i> <span data-i18n="apt.feat.family">Vhodné pro rodiny</span></span>
+          <span class="feat-tag"><i data-lucide="flag" class="lc"></i> <span data-i18n="apt.feat.golf">Ideální pro golfisty</span></span>
+          <span class="feat-tag"><i data-lucide="umbrella" class="lc"></i> <span data-i18n="apt.feat.beach">Pláž 5 min</span></span>
+          <span class="feat-tag"><i data-lucide="droplets" class="lc"></i> <span data-i18n="apt.feat.bath">2 koupelny</span></span>
+          <span class="feat-tag"><i data-lucide="bed" class="lc"></i> <span data-i18n="apt.feat.bed">2 ložnice</span></span>
+          <span class="feat-tag"><i data-lucide="shield" class="lc"></i> <span data-i18n="apt.feat.safe">Bezpečný komplex</span></span>
         </div>
-        <p style="color:var(--text-l);font-size:.9rem">Estepona je jedno z nejautentičtějších míst celé Costa del Sol. Bílé uličky posypané květinami, rybářský přístav, nádherné pláže a desítky golfových hřišť v okolí.</p>
+        <p style="color:var(--text-l);font-size:.9rem" data-i18n="apt.p3">Estepona je jedno z nejautentičtějších míst celé Costa del Sol. Bílé uličky posypané květinami, rybářský přístav, nádherné pláže a desítky golfových hřišť v okolí.</p>
       </div>
     </div>
   </div>
@@ -812,9 +836,9 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 <!-- ── JAK SE DOSTAT ── -->
 <section id="jak-se-dostat">
   <div class="container">
-    <div class="sec-label">Cesta k nám</div>
-    <h2 class="sec-h2">Jak se k nám dostanete</h2>
-    <span class="sec-script">z Málagy to trvá hodinu</span>
+    <div class="sec-label" data-i18n="how.label">Cesta k nám</div>
+    <h2 class="sec-h2" data-i18n="how.h2">Jak se k nám dostanete</h2>
+    <span class="sec-script" data-i18n="how.script">z Málagy to trvá hodinu</span>
 
     <div class="dostat-grid">
       <!-- Letiště -->
@@ -822,12 +846,12 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
         <div class="dostat-icon">
           <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <h3>Letiště Málaga</h3>
-        <p>Nejbližší mezinárodní letiště. Letí se sem z Prahy i Brna, v létě i mnoho přímých linek.</p>
-        <div class="price-row"><span>Vzdálenost</span><strong>~85 km</strong></div>
-        <div class="price-row"><span>Doba jízdy</span><strong>~60–75 min</strong></div>
-        <div class="price-row"><span>Dálnice</span><strong>AP-7 / A-7</strong></div>
-        <p style="margin-top:1rem;font-size:.88rem;color:var(--text-l)">Doporučujeme vzít dálnici AP-7 (zpoplatněna) — ušetří čas a cesta je příjemnější.</p>
+        <h3 data-i18n="how.airport.h3">Letiště Málaga</h3>
+        <p data-i18n="how.airport.p">Nejbližší mezinárodní letiště. Letí se sem z Prahy i Brna, v létě i mnoho přímých linek.</p>
+        <div class="price-row"><span data-i18n="how.airport.dist">Vzdálenost</span><strong>~85 km</strong></div>
+        <div class="price-row"><span data-i18n="how.airport.time">Doba jízdy</span><strong>~60–75 min</strong></div>
+        <div class="price-row"><span data-i18n="how.highway">Dálnice</span><strong>AP-7 / A-7</strong></div>
+        <p style="margin-top:1rem;font-size:.88rem;color:var(--text-l)" data-i18n="how.airport.note">Doporučujeme vzít dálnici AP-7 (zpoplatněna) — ušetří čas a cesta je příjemnější.</p>
       </div>
 
       <!-- Půjčení auta -->
@@ -835,8 +859,8 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
         <div class="dostat-icon">
           <svg viewBox="0 0 24 24"><rect x="1" y="8" width="22" height="10" rx="2"/><path d="M5 8V6a2 2 0 012-2h10a2 2 0 012 2v2M1 12h22M7 16h.01M17 16h.01" stroke-linecap="round"/></svg>
         </div>
-        <h3>Půjčení auta</h3>
-        <p>Auto si půjčte přímo na letišti — přepážky jsou v suterénu (patro -1, -2) nebo v přízemí Terminálu 2 a 3.</p>
+        <h3 data-i18n="how.car.h3">Půjčení auta</h3>
+        <p data-i18n="how.car.p">Auto si půjčte přímo na letišti — přepážky jsou v suterénu (patro -1, -2) nebo v přízemí Terminálu 2 a 3.</p>
         <div class="rent-list">
           <span class="rent-item">OK Mobility</span>
           <span class="rent-item">SIXT</span>
@@ -845,9 +869,9 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
           <span class="rent-item">Avis / Budget</span>
           <span class="rent-item">Goldcar</span>
         </div>
-        <div class="price-row" style="margin-top:1rem"><span>Malé auto / týden</span><strong>~150 €</strong></div>
-        <div class="price-row"><span>Rodinné SUV / týden</span><strong>~250–350 €</strong></div>
-        <p class="dostat-note">Ceny se liší dle sezóny. V létě doporučujeme rezervovat předem.</p>
+        <div class="price-row" style="margin-top:1rem"><span data-i18n="how.car.small">Malé auto / týden</span><strong>~150 €</strong></div>
+        <div class="price-row"><span data-i18n="how.car.suv">Rodinné SUV / týden</span><strong>~250–350 €</strong></div>
+        <p class="dostat-note" data-i18n="how.car.note">Ceny se liší dle sezóny. V létě doporučujeme rezervovat předem.</p>
       </div>
 
       <!-- Navigace -->
@@ -855,13 +879,13 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
         <div class="dostat-icon">
           <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" stroke-linecap="round"/><circle cx="12" cy="11" r="3"/></svg>
         </div>
-        <h3>Navigace k apartmánu</h3>
-        <p>Adresa pro navigaci:</p>
+        <h3 data-i18n="how.nav.h3">Navigace k apartmánu</h3>
+        <p data-i18n="how.nav.p">Adresa pro navigaci:</p>
         <div style="background:var(--cream);padding:.8rem 1rem;border-radius:4px;margin:.8rem 0;font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--olive-d)">
           Avenida del Fuego 50<br>
           <span style="font-size:.9rem;font-family:'Jost',sans-serif;color:var(--text-l)">29693 Estepona, Málaga</span>
         </div>
-        <p style="font-size:.88rem;color:var(--text-l)">Klikněte na tlačítko a spustí se navigace přímo k nám.</p>
+        <p style="font-size:.88rem;color:var(--text-l)" data-i18n="how.nav.note">Klikněte na tlačítko a spustí se navigace přímo k nám.</p>
         <div class="nav-btns">
           <a href="https://maps.google.com/?q=Avenida+del+Fuego+50+Estepona" target="_blank" class="map-btn">
             <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
@@ -885,15 +909,15 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 <section id="manual">
   <div class="container">
     <div class="manual-intro">
-      <div class="sec-label center">Průvodce apartmánem</div>
-      <h2 class="sec-h2" style="text-align:center">Manuál</h2>
-      <span class="sec-script" style="text-align:center;display:block">vše, co potřebujete vědět</span>
-      <p>Připravili jsme pro vás přehledný průvodce. Klikněte na sekci, která vás zajímá.</p>
+      <div class="sec-label center" data-i18n="manual.label">Průvodce apartmánem</div>
+      <h2 class="sec-h2" style="text-align:center" data-i18n="manual.h2">Manuál</h2>
+      <span class="sec-script" style="text-align:center;display:block" data-i18n="manual.script">vše, co potřebujete vědět</span>
+      <p data-i18n="manual.p">Připravili jsme pro vás přehledný průvodce. Klikněte na sekci, která vás zajímá.</p>
     </div>
 
     <!-- PŘÍJEZD -->
     <div class="manual-group">
-      <div class="manual-group-title"><i data-lucide="car" class="lc-lg"></i> Před příjezdem & příjezd</div>
+      <div class="manual-group-title"><i data-lucide="car" class="lc-lg"></i> <span data-i18n="manual.g.arrival">Před příjezdem & příjezd</span></div>
       <div class="manual-cards">
 
         <div class="manual-card" onclick="toggleMC(this)">
@@ -929,7 +953,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- OBÝVÁK & TERASA -->
     <div class="manual-group">
-      <div class="manual-group-title"><i data-lucide="sofa" class="lc-lg"></i> Obývací pokoj & terasa</div>
+      <div class="manual-group-title"><i data-lucide="sofa" class="lc-lg"></i> <span data-i18n="manual.g.living">Obývací pokoj & terasa</span></div>
       <div class="manual-cards">
 
         <div class="manual-card" onclick="toggleMC(this)">
@@ -965,7 +989,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- KUCHYNĚ -->
     <div class="manual-group">
-      <div class="manual-group-title"><i data-lucide="utensils" class="lc-lg"></i> Kuchyně</div>
+      <div class="manual-group-title"><i data-lucide="utensils" class="lc-lg"></i> <span data-i18n="manual.g.kitchen">Kuchyně</span></div>
       <div class="manual-cards">
         <div class="manual-card" onclick="toggleMC(this)">
           <div class="mc-header">
@@ -991,7 +1015,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- LOŽNICE & KOUPELNY -->
     <div class="manual-group">
-      <div class="manual-group-title"><i data-lucide="bed" class="lc-lg"></i> Ložnice & koupelny</div>
+      <div class="manual-group-title"><i data-lucide="bed" class="lc-lg"></i> <span data-i18n="manual.g.bedroom">Ložnice & koupelny</span></div>
       <div class="manual-cards">
         <div class="manual-card" onclick="toggleMC(this)">
           <div class="mc-header">
@@ -1018,7 +1042,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- TECHNIKA -->
     <div class="manual-group">
-      <div class="manual-group-title"><i data-lucide="wifi" class="lc-lg"></i> WiFi & technika</div>
+      <div class="manual-group-title"><i data-lucide="wifi" class="lc-lg"></i> <span data-i18n="manual.g.tech">WiFi & technika</span></div>
       <div class="manual-cards">
         <div class="manual-card" onclick="toggleMC(this)">
           <div class="mc-header">
@@ -1045,7 +1069,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 
     <!-- PŘED ODJEZDEM -->
     <div class="manual-group">
-      <div class="manual-group-title"><i data-lucide="check-circle" class="lc-lg"></i> Před odjezdem</div>
+      <div class="manual-group-title"><i data-lucide="check-circle" class="lc-lg"></i> <span data-i18n="manual.g.checkout">Před odjezdem</span></div>
       <div class="manual-cards">
         <div class="manual-card" onclick="toggleMC(this)">
           <div class="mc-header">
@@ -1070,7 +1094,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
     </div>
 
     <div class="manual-addr">
-      <p>Adresa apartmánu</p>
+      <p data-i18n="manual.addr">Adresa apartmánu</p>
       <div class="addr">Avenida del Fuego 50 · 29693 Estepona · Málaga</div>
       <div class="nav-btns" style="justify-content:center;margin-top:1rem">
         <a href="https://maps.google.com/?q=Avenida+del+Fuego+50+Estepona" target="_blank" class="map-btn">Google Maps</a>
@@ -1084,19 +1108,19 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 <!-- ── KAM NA VÝLET ── -->
 <section id="kam-na-vylet">
   <div class="container">
-    <div class="sec-label">Costa del Sol & okolí</div>
-    <h2 class="sec-h2">Kam na výlet</h2>
-    <span class="sec-script">objevte krásy Andalusie</span>
+    <div class="sec-label" data-i18n="trips.label">Costa del Sol & okolí</div>
+    <h2 class="sec-h2" data-i18n="trips.h2">Kam na výlet</h2>
+    <span class="sec-script" data-i18n="trips.script">objevte krásy Andalusie</span>
 
     <div class="trip-tabs" id="tripTabs">
-      <button class="trip-tab active" onclick="filterTrips('vse',this)">Vše</button>
-      <button class="trip-tab" onclick="filterTrips('plaze',this)"><i data-lucide="umbrella" class="lc-sm"></i> Pláže</button>
-      <button class="trip-tab" onclick="filterTrips('golf',this)"><i data-lucide="flag" class="lc-sm"></i> Golf</button>
-      <button class="trip-tab" onclick="filterTrips('restaurace',this)"><i data-lucide="wine" class="lc-sm"></i> Restaurace</button>
-      <button class="trip-tab" onclick="filterTrips('historicka',this)"><i data-lucide="landmark" class="lc-sm"></i> Historická města</button>
-      <button class="trip-tab" onclick="filterTrips('priroda',this)"><i data-lucide="leaf" class="lc-sm"></i> Příroda</button>
-      <button class="trip-tab" onclick="filterTrips('nakupy',this)"><i data-lucide="shopping-bag" class="lc-sm"></i> Nákupy</button>
-      <button class="trip-tab" onclick="filterTrips('vylety',this)"><i data-lucide="map" class="lc-sm"></i> Jednodenní výlety</button>
+      <button class="trip-tab active" onclick="filterTrips('vse',this)" data-i18n="trips.tab.all">Vše</button>
+      <button class="trip-tab" onclick="filterTrips('plaze',this)"><i data-lucide="umbrella" class="lc-sm"></i> <span data-i18n="trips.tab.beach">Pláže</span></button>
+      <button class="trip-tab" onclick="filterTrips('golf',this)"><i data-lucide="flag" class="lc-sm"></i> <span data-i18n="trips.tab.golf">Golf</span></button>
+      <button class="trip-tab" onclick="filterTrips('restaurace',this)"><i data-lucide="wine" class="lc-sm"></i> <span data-i18n="trips.tab.rest">Restaurace</span></button>
+      <button class="trip-tab" onclick="filterTrips('historicka',this)"><i data-lucide="landmark" class="lc-sm"></i> <span data-i18n="trips.tab.hist">Historická města</span></button>
+      <button class="trip-tab" onclick="filterTrips('priroda',this)"><i data-lucide="leaf" class="lc-sm"></i> <span data-i18n="trips.tab.nature">Příroda</span></button>
+      <button class="trip-tab" onclick="filterTrips('nakupy',this)"><i data-lucide="shopping-bag" class="lc-sm"></i> <span data-i18n="trips.tab.shop">Nákupy</span></button>
+      <button class="trip-tab" onclick="filterTrips('vylety',this)"><i data-lucide="map" class="lc-sm"></i> <span data-i18n="trips.tab.day">Jednodenní výlety</span></button>
     </div>
 
     <div id="map"></div>
@@ -1239,9 +1263,9 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 <!-- ── OBLÍBENÁ MÍSTA ── -->
 <section id="oblibena-mista">
   <div class="container">
-    <div class="sec-label">Osobní doporučení</div>
-    <h2 class="sec-h2">Naše oblíbená místa</h2>
-    <span class="sec-script">místa, která milujeme a rádi sdílíme</span>
+    <div class="sec-label" data-i18n="favs.label">Osobní doporučení</div>
+    <h2 class="sec-h2" data-i18n="favs.h2">Naše oblíbená místa</h2>
+    <span class="sec-script" data-i18n="favs.script">místa, která milujeme a rádi sdílíme</span>
 
     <div class="favs-grid">
       <div class="fav-card">
@@ -1316,9 +1340,9 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 <!-- ── KONTAKTY ── -->
 <section id="kontakty">
   <div class="container">
-    <div class="sec-label">Důležité kontakty</div>
-    <h2 class="sec-h2">Kontakty</h2>
-    <span class="sec-script">vždy víte, na koho se obrátit</span>
+    <div class="sec-label" data-i18n="contacts.label">Důležité kontakty</div>
+    <h2 class="sec-h2" data-i18n="contacts.h2">Kontakty</h2>
+    <span class="sec-script" data-i18n="contacts.script">vždy víte, na koho se obrátit</span>
 
     <div class="kontakty-grid">
       <div class="kontakt-group">
@@ -1329,7 +1353,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
             <strong>Majitelé</strong>
             <span>Váš první kontakt při čemkoliv</span>
             <div class="kontakt-actions">
-              <a href="tel:+420000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg>Zavolat</a>
+              <a href="tel:+420000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="contacts.call">Zavolat</span></a>
               <a href="https://wa.me/420000000000" class="kontakt-btn">WhatsApp</a>
             </div>
           </div>
@@ -1340,7 +1364,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
             <strong>Správce objektu</strong>
             <span>Technické záležitosti komplexu</span>
             <div class="kontakt-actions">
-              <a href="tel:+34000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg>Zavolat</a>
+              <a href="tel:+34000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="contacts.call">Zavolat</span></a>
             </div>
           </div>
         </div>
@@ -1350,7 +1374,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
             <strong>Paní na úklid</strong>
             <span>Úklid apartmánu</span>
             <div class="kontakt-actions">
-              <a href="tel:+34000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg>Zavolat</a>
+              <a href="tel:+34000000000" class="kontakt-btn"><svg viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="contacts.call">Zavolat</span></a>
               <a href="https://wa.me/34000000000" class="kontakt-btn">WhatsApp</a>
             </div>
           </div>
@@ -1405,7 +1429,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
             <strong>Nejbližší supermarket</strong>
             <span>Mercadona / Lidl</span>
             <div class="kontakt-actions">
-              <a href="https://maps.google.com/?q=Mercadona+Estepona" target="_blank" class="kontakt-btn">Navigovat</a>
+              <a href="https://maps.google.com/?q=Mercadona+Estepona" target="_blank" class="kontakt-btn" data-i18n="contacts.navigate">Navigovat</a>
             </div>
           </div>
         </div>
@@ -1415,7 +1439,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
             <strong>Bankomat</strong>
             <span>Cajero más cercano</span>
             <div class="kontakt-actions">
-              <a href="https://maps.google.com/?q=cajero+automatico+Estepona" target="_blank" class="kontakt-btn">Navigovat</a>
+              <a href="https://maps.google.com/?q=cajero+automatico+Estepona" target="_blank" class="kontakt-btn" data-i18n="contacts.navigate">Navigovat</a>
             </div>
           </div>
         </div>
@@ -1425,7 +1449,7 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
             <strong>Benzínová stanice</strong>
             <span>Gasolinera más cercana</span>
             <div class="kontakt-actions">
-              <a href="https://maps.google.com/?q=gasolinera+Estepona" target="_blank" class="kontakt-btn">Navigovat</a>
+              <a href="https://maps.google.com/?q=gasolinera+Estepona" target="_blank" class="kontakt-btn" data-i18n="contacts.navigate">Navigovat</a>
             </div>
           </div>
         </div>
@@ -1440,23 +1464,23 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
     </div>
 
     <!-- Tísňová čísla -->
-    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--olive-d);margin:3rem 0 1rem">Tísňová čísla · Španělsko</h3>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--olive-d);margin:3rem 0 1rem" data-i18n="contacts.emergency">Tísňová čísla · Španělsko</h3>
     <div class="emergency-grid">
       <div class="emergency-card">
         <div class="ec-num">112</div>
-        <div class="ec-label">Integrovaný záchranný systém</div>
+        <div class="ec-label" data-i18n="contacts.ec1">Integrovaný záchranný systém</div>
       </div>
       <div class="emergency-card">
         <div class="ec-num">091</div>
-        <div class="ec-label">Policie Nacional</div>
+        <div class="ec-label" data-i18n="contacts.ec2">Policie Nacional</div>
       </div>
       <div class="emergency-card">
         <div class="ec-num">080</div>
-        <div class="ec-label">Hasiči</div>
+        <div class="ec-label" data-i18n="contacts.ec3">Hasiči</div>
       </div>
       <div class="emergency-card">
         <div class="ec-num">061</div>
-        <div class="ec-label">Záchranná služba</div>
+        <div class="ec-label" data-i18n="contacts.ec4">Záchranná služba</div>
       </div>
     </div>
   </div>
@@ -1465,15 +1489,15 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 <!-- ── GALERIE ── -->
 <section id="galerie">
   <div class="container">
-    <div class="sec-label">Fotografie</div>
-    <h2 class="sec-h2">Galerie</h2>
-    <span class="sec-script">atmosféra, světlo, pohoda</span>
+    <div class="sec-label" data-i18n="gallery.label">Fotografie</div>
+    <h2 class="sec-h2" data-i18n="gallery.h2">Galerie</h2>
+    <span class="sec-script" data-i18n="gallery.script">atmosféra, světlo, pohoda</span>
 
     <div class="gal-tabs" id="galTabs">
-      <button class="gal-tab active" onclick="filterGal('vse',this)">Vše</button>
-      <button class="gal-tab" onclick="filterGal('apartman',this)">Apartmán</button>
-      <button class="gal-tab" onclick="filterGal('zahrada',this)">Zahrada</button>
-      <button class="gal-tab" onclick="filterGal('komplex',this)">Komplex</button>
+      <button class="gal-tab active" onclick="filterGal('vse',this)" data-i18n="gallery.tab.all">Vše</button>
+      <button class="gal-tab" onclick="filterGal('apartman',this)" data-i18n="gallery.tab.apt">Apartmán</button>
+      <button class="gal-tab" onclick="filterGal('zahrada',this)" data-i18n="gallery.tab.garden">Zahrada</button>
+      <button class="gal-tab" onclick="filterGal('komplex',this)" data-i18n="gallery.tab.complex">Komplex</button>
     </div>
 
     <div class="gal-grid" id="galGrid">
@@ -1529,8 +1553,8 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
 <!-- ── FOOTER ── -->
 <footer>
   <div class="footer-logo">Náš druhý domov · Estepona</div>
-  <p>ONE80 Suites · Avenida del Fuego 50 · 29693 Estepona · Málaga, Španělsko</p>
-  <p style="margin-top:.5rem;font-size:.72rem;opacity:.4">s láskou vytvořeno pro naše hosty</p>
+  <p data-i18n="footer.p1">ONE80 Suites · Avenida del Fuego 50 · 29693 Estepona · Málaga, Španělsko</p>
+  <p style="margin-top:.5rem;font-size:.72rem;opacity:.4" data-i18n="footer.p2">s láskou vytvořeno pro naše hosty</p>
 </footer>
 
 <!-- ── JSEM HOST MODAL ── -->
@@ -1544,14 +1568,14 @@ footer p{font-size:.8rem;letter-spacing:.06em;margin-bottom:.25rem}
       </button>
     </div>
     <div class="modal-inner">
-      <h2 class="modal-h">Průvodce pobytem</h2>
-      <span class="modal-sub">vše krok za krokem</span>
+      <h2 class="modal-h" data-i18n="modal.h">Průvodce pobytem</h2>
+      <span class="modal-sub" data-i18n="modal.sub">vše krok za krokem</span>
 
       <div class="modal-phases">
-        <button class="phase-btn active" onclick="switchPhase('pred-cestou',this)"><i data-lucide="plane" class="lc"></i> Před cestou</button>
-        <button class="phase-btn" onclick="switchPhase('po-prijezdu',this)">🏠 Po příjezdu</button>
-        <button class="phase-btn" onclick="switchPhase('behem-pobytu',this)"><i data-lucide="sun" class="lc"></i> Během pobytu</button>
-        <button class="phase-btn" onclick="switchPhase('pred-odjezdem',this)"><i data-lucide="check-circle" class="lc"></i> Před odjezdem</button>
+        <button class="phase-btn active" onclick="switchPhase('pred-cestou',this)"><i data-lucide="plane" class="lc"></i> <span data-i18n="modal.phase1">Před cestou</span></button>
+        <button class="phase-btn" onclick="switchPhase('po-prijezdu',this)">🏠 <span data-i18n="modal.phase2">Po příjezdu</span></button>
+        <button class="phase-btn" onclick="switchPhase('behem-pobytu',this)"><i data-lucide="sun" class="lc"></i> <span data-i18n="modal.phase3">Během pobytu</span></button>
+        <button class="phase-btn" onclick="switchPhase('pred-odjezdem',this)"><i data-lucide="check-circle" class="lc"></i> <span data-i18n="modal.phase4">Před odjezdem</span></button>
       </div>
 
       <!-- Před cestou -->
@@ -1850,7 +1874,202 @@ function lbNav(dir){
 
 /* ─── LUCIDE ICONS ─── */
 lucide.createIcons();
+
+/* ─── I18N ─── */
+const LANG_DATA = {
+  cs: {
+    'nav.home':'Domů','nav.apart':'O apartmánu','nav.how':'Jak se dostat',
+    'nav.manual':'Manuál','nav.trips':'Kam na výlet','nav.places':'Oblíbená místa',
+    'nav.contacts':'Kontakty','nav.gallery':'Galerie',
+    'hero.eyebrow':'Estepona · Costa del Sol · Španělsko',
+    'hero.h1':'Vítejte v&nbsp;našem<br>druhém domově',
+    'hero.script':'kde slunce nikdy neodchází',
+    'hero.tagline':'Více slunce · Více klidu · Více života',
+    'hero.btn.host':'Jsem host','hero.btn.explore':'Poznejte náš domov','hero.scroll':'Scrolluj',
+    'weather.now':'Estepona · aktuálně','weather.wind':'vítr','weather.hum':'vlhkost',
+    'apt.label':'One80 Suites · Estepona','apt.h2':'Náš apartmán',
+    'apt.script':'světlý, vzdušný a plný pohody',
+    'apt.p1':'Apartmán B se nachází v moderním rezidenčním komplexu ONE80 Suites přímo v Esteponě na Costa del Sol. Je naším druhým domovem — místem, kde se zpomalí čas a věci jsou najednou jinak.',
+    'apt.p2':'Prostorný obývací pokoj přechází do plně vybavené kuchyně. Světlý interiér v béžových tónech s detaily v olivové zelené. Přímo z obýváku vyjdete na soukromou zahradu.',
+    'apt.feat.garden':'Soukromá zahrada','apt.feat.garage':'Vlastní garážové stání',
+    'apt.feat.ac':'Klimatizace','apt.feat.wifi':'Vysokorychlostní WiFi','apt.feat.tv':'Smart TV',
+    'apt.feat.kitchen':'Plně vybavená kuchyně','apt.feat.family':'Vhodné pro rodiny',
+    'apt.feat.golf':'Ideální pro golfisty','apt.feat.beach':'Pláž 5 min',
+    'apt.feat.bath':'2 koupelny','apt.feat.bed':'2 ložnice','apt.feat.safe':'Bezpečný komplex',
+    'apt.p3':'Estepona je jedno z nejautentičtějších míst celé Costa del Sol. Bílé uličky posypané květinami, rybářský přístav, nádherné pláže a desítky golfových hřišť v okolí.',
+    'how.label':'Cesta k nám','how.h2':'Jak se k nám dostanete','how.script':'z Málagy to trvá hodinu',
+    'how.airport.h3':'Letiště Málaga',
+    'how.airport.p':'Nejbližší mezinárodní letiště. Letí se sem z Prahy i Brna, v létě i mnoho přímých linek.',
+    'how.airport.dist':'Vzdálenost','how.airport.time':'Doba jízdy','how.highway':'Dálnice',
+    'how.airport.note':'Doporučujeme vzít dálnici AP-7 (zpoplatněna) — ušetří čas a cesta je příjemnější.',
+    'how.car.h3':'Půjčení auta',
+    'how.car.p':'Auto si půjčte přímo na letišti — přepážky jsou v suterénu (patro -1, -2) nebo v přízemí Terminálu 2 a 3.',
+    'how.car.small':'Malé auto / týden','how.car.suv':'Rodinné SUV / týden',
+    'how.car.note':'Ceny se liší dle sezóny. V létě doporučujeme rezervovat předem.',
+    'how.nav.h3':'Navigace k apartmánu','how.nav.p':'Adresa pro navigaci:',
+    'how.nav.note':'Klikněte na tlačítko a spustí se navigace přímo k nám.',
+    'manual.label':'Průvodce apartmánem','manual.h2':'Manuál','manual.script':'vše, co potřebujete vědět',
+    'manual.p':'Připravili jsme pro vás přehledný průvodce. Klikněte na sekci, která vás zajímá.',
+    'manual.g.arrival':'Před příjezdem & příjezd','manual.g.living':'Obývací pokoj & terasa',
+    'manual.g.kitchen':'Kuchyně','manual.g.bedroom':'Ložnice & koupelny',
+    'manual.g.tech':'WiFi & technika','manual.g.checkout':'Před odjezdem','manual.addr':'Adresa apartmánu',
+    'trips.label':'Costa del Sol & okolí','trips.h2':'Kam na výlet','trips.script':'objevte krásy Andalusie',
+    'trips.tab.all':'Vše','trips.tab.beach':'Pláže','trips.tab.golf':'Golf',
+    'trips.tab.rest':'Restaurace','trips.tab.hist':'Historická města','trips.tab.nature':'Příroda',
+    'trips.tab.shop':'Nákupy','trips.tab.day':'Jednodenní výlety',
+    'favs.label':'Osobní doporučení','favs.h2':'Naše oblíbená místa',
+    'favs.script':'místa, která milujeme a rádi sdílíme',
+    'contacts.label':'Důležité kontakty','contacts.h2':'Kontakty',
+    'contacts.script':'vždy víte, na koho se obrátit',
+    'contacts.call':'Zavolat','contacts.navigate':'Navigovat',
+    'contacts.emergency':'Tísňová čísla · Španělsko',
+    'contacts.ec1':'Integrovaný záchranný systém','contacts.ec2':'Policie Nacional',
+    'contacts.ec3':'Hasiči','contacts.ec4':'Záchranná služba',
+    'gallery.label':'Fotografie','gallery.h2':'Galerie','gallery.script':'atmosféra, světlo, pohoda',
+    'gallery.tab.all':'Vše','gallery.tab.apt':'Apartmán','gallery.tab.garden':'Zahrada','gallery.tab.complex':'Komplex',
+    'footer.p1':'ONE80 Suites · Avenida del Fuego 50 · 29693 Estepona · Málaga, Španělsko',
+    'footer.p2':'s láskou vytvořeno pro naše hosty',
+    'modal.h':'Průvodce pobytem','modal.sub':'vše krok za krokem',
+    'modal.phase1':'Před cestou','modal.phase2':'Po příjezdu','modal.phase3':'Během pobytu','modal.phase4':'Před odjezdem',
+  },
+  en: {
+    'nav.home':'Home','nav.apart':'The apartment','nav.how':'Getting here',
+    'nav.manual':'Guide','nav.trips':'Day trips','nav.places':'Favorites',
+    'nav.contacts':'Contacts','nav.gallery':'Gallery',
+    'hero.eyebrow':'Estepona · Costa del Sol · Spain',
+    'hero.h1':'Welcome to our<br>second home',
+    'hero.script':'where the sun never sets',
+    'hero.tagline':'More sun · More peace · More life',
+    'hero.btn.host':'I\'m a guest','hero.btn.explore':'Discover our home','hero.scroll':'Scroll',
+    'weather.now':'Estepona · now','weather.wind':'wind','weather.hum':'humidity',
+    'apt.label':'One80 Suites · Estepona','apt.h2':'Our apartment',
+    'apt.script':'bright, airy and full of joy',
+    'apt.p1':'Apartment B is located in the modern ONE80 Suites complex in Estepona on the Costa del Sol. It is our second home — a place where time slows down and everything feels different.',
+    'apt.p2':'A spacious living room opens into a fully equipped kitchen. Bright interior in beige tones with olive green details. Step directly from the living room onto the private garden.',
+    'apt.feat.garden':'Private garden','apt.feat.garage':'Private parking space',
+    'apt.feat.ac':'Air conditioning','apt.feat.wifi':'High-speed WiFi','apt.feat.tv':'Smart TV',
+    'apt.feat.kitchen':'Fully equipped kitchen','apt.feat.family':'Family-friendly',
+    'apt.feat.golf':'Perfect for golfers','apt.feat.beach':'Beach 5 min',
+    'apt.feat.bath':'2 bathrooms','apt.feat.bed':'2 bedrooms','apt.feat.safe':'Secure complex',
+    'apt.p3':'Estepona is one of the most authentic spots on the Costa del Sol — white flower-lined alleys, a fishing harbour, beautiful beaches and dozens of golf courses nearby.',
+    'how.label':'Getting here','how.h2':'How to get here','how.script':'it\'s an hour from Málaga',
+    'how.airport.h3':'Málaga Airport',
+    'how.airport.p':'The nearest international airport. Flights from Prague and Brno, with many direct routes in summer.',
+    'how.airport.dist':'Distance','how.airport.time':'Drive time','how.highway':'Motorway',
+    'how.airport.note':'We recommend the AP-7 toll motorway — it saves time and the drive is more pleasant.',
+    'how.car.h3':'Car rental',
+    'how.car.p':'Rent a car at the airport — desks are in the basement (floors -1, -2) or on the ground floor of Terminals 2 and 3.',
+    'how.car.small':'Small car / week','how.car.suv':'Family SUV / week',
+    'how.car.note':'Prices vary by season. In summer we recommend booking in advance.',
+    'how.nav.h3':'Navigate to the apartment','how.nav.p':'Address for navigation:',
+    'how.nav.note':'Click the button and navigation will start directly to us.',
+    'manual.label':'Apartment guide','manual.h2':'Guide','manual.script':'everything you need to know',
+    'manual.p':'We have prepared a clear guide for you. Click on the section you are interested in.',
+    'manual.g.arrival':'Before arrival & arrival','manual.g.living':'Living room & terrace',
+    'manual.g.kitchen':'Kitchen','manual.g.bedroom':'Bedrooms & bathrooms',
+    'manual.g.tech':'WiFi & technology','manual.g.checkout':'Before departure','manual.addr':'Apartment address',
+    'trips.label':'Costa del Sol & surroundings','trips.h2':'Day trips','trips.script':'discover the beauty of Andalusia',
+    'trips.tab.all':'All','trips.tab.beach':'Beaches','trips.tab.golf':'Golf',
+    'trips.tab.rest':'Restaurants','trips.tab.hist':'Historic towns','trips.tab.nature':'Nature',
+    'trips.tab.shop':'Shopping','trips.tab.day':'Day trips',
+    'favs.label':'Personal recommendations','favs.h2':'Our favorite spots',
+    'favs.script':'places we love and love to share',
+    'contacts.label':'Important contacts','contacts.h2':'Contacts',
+    'contacts.script':'you always know who to call',
+    'contacts.call':'Call','contacts.navigate':'Navigate',
+    'contacts.emergency':'Emergency numbers · Spain',
+    'contacts.ec1':'Integrated emergency system','contacts.ec2':'National Police',
+    'contacts.ec3':'Fire brigade','contacts.ec4':'Ambulance',
+    'gallery.label':'Photos','gallery.h2':'Gallery','gallery.script':'atmosphere, light, well-being',
+    'gallery.tab.all':'All','gallery.tab.apt':'Apartment','gallery.tab.garden':'Garden','gallery.tab.complex':'Complex',
+    'footer.p1':'ONE80 Suites · Avenida del Fuego 50 · 29693 Estepona · Málaga, Spain',
+    'footer.p2':'created with love for our guests',
+    'modal.h':'Stay guide','modal.sub':'everything step by step',
+    'modal.phase1':'Before travel','modal.phase2':'After arrival','modal.phase3':'During your stay','modal.phase4':'Before departure',
+  },
+  es: {
+    'nav.home':'Inicio','nav.apart':'El apartamento','nav.how':'Cómo llegar',
+    'nav.manual':'Manual','nav.trips':'Excursiones','nav.places':'Favoritos',
+    'nav.contacts':'Contactos','nav.gallery':'Galería',
+    'hero.eyebrow':'Estepona · Costa del Sol · España',
+    'hero.h1':'Bienvenidos a nuestro<br>segundo hogar',
+    'hero.script':'donde el sol nunca se va',
+    'hero.tagline':'Más sol · Más calma · Más vida',
+    'hero.btn.host':'Soy huésped','hero.btn.explore':'Descubre nuestro hogar','hero.scroll':'Desplázate',
+    'weather.now':'Estepona · ahora','weather.wind':'viento','weather.hum':'humedad',
+    'apt.label':'One80 Suites · Estepona','apt.h2':'Nuestro apartamento',
+    'apt.script':'luminoso, aireado y lleno de alegría',
+    'apt.p1':'El Apartamento B está situado en el moderno complejo ONE80 Suites en Estepona, en la Costa del Sol. Es nuestro segundo hogar — un lugar donde el tiempo se ralentiza y todo se siente diferente.',
+    'apt.p2':'Un amplio salón se abre a una cocina totalmente equipada. Interior luminoso en tonos beige con detalles en verde oliva. Desde el salón se accede directamente al jardín privado.',
+    'apt.feat.garden':'Jardín privado','apt.feat.garage':'Plaza de garaje propia',
+    'apt.feat.ac':'Aire acondicionado','apt.feat.wifi':'WiFi de alta velocidad','apt.feat.tv':'Smart TV',
+    'apt.feat.kitchen':'Cocina totalmente equipada','apt.feat.family':'Apto para familias',
+    'apt.feat.golf':'Ideal para golfistas','apt.feat.beach':'Playa a 5 min',
+    'apt.feat.bath':'2 baños','apt.feat.bed':'2 dormitorios','apt.feat.safe':'Complejo seguro',
+    'apt.p3':'Estepona es uno de los lugares más auténticos de toda la Costa del Sol — callejuelas blancas llenas de flores, puerto pesquero, hermosas playas y decenas de campos de golf.',
+    'how.label':'Cómo llegar','how.h2':'Cómo llegar hasta nosotros','how.script':'desde Málaga tarda una hora',
+    'how.airport.h3':'Aeropuerto de Málaga',
+    'how.airport.p':'El aeropuerto internacional más cercano. Vuelos desde Praga y Brno, con muchas rutas directas en verano.',
+    'how.airport.dist':'Distancia','how.airport.time':'Tiempo de viaje','how.highway':'Autopista',
+    'how.airport.note':'Recomendamos la autopista de peaje AP-7 — ahorra tiempo y el viaje es más agradable.',
+    'how.car.h3':'Alquiler de coche',
+    'how.car.p':'Alquile un coche en el aeropuerto — mostradores en el sótano (plantas -1, -2) o en planta baja de las Terminales 2 y 3.',
+    'how.car.small':'Coche pequeño / semana','how.car.suv':'SUV familiar / semana',
+    'how.car.note':'Los precios varían según temporada. En verano recomendamos reservar con antelación.',
+    'how.nav.h3':'Cómo llegar al apartamento','how.nav.p':'Dirección para la navegación:',
+    'how.nav.note':'Haga clic en el botón y la navegación empezará directamente hacia nosotros.',
+    'manual.label':'Guía del apartamento','manual.h2':'Manual','manual.script':'todo lo que necesita saber',
+    'manual.p':'Hemos preparado una guía clara. Haga clic en la sección que le interese.',
+    'manual.g.arrival':'Antes de llegar & llegada','manual.g.living':'Salón & terraza',
+    'manual.g.kitchen':'Cocina','manual.g.bedroom':'Dormitorios & baños',
+    'manual.g.tech':'WiFi & tecnología','manual.g.checkout':'Antes de salir','manual.addr':'Dirección del apartamento',
+    'trips.label':'Costa del Sol & alrededores','trips.h2':'Excursiones','trips.script':'descubra las maravillas de Andalucía',
+    'trips.tab.all':'Todo','trips.tab.beach':'Playas','trips.tab.golf':'Golf',
+    'trips.tab.rest':'Restaurantes','trips.tab.hist':'Ciudades históricas','trips.tab.nature':'Naturaleza',
+    'trips.tab.shop':'Compras','trips.tab.day':'Excursiones de un día',
+    'favs.label':'Recomendaciones personales','favs.h2':'Nuestros lugares favoritos',
+    'favs.script':'lugares que amamos y compartimos',
+    'contacts.label':'Contactos importantes','contacts.h2':'Contactos',
+    'contacts.script':'siempre sabrá a quién llamar',
+    'contacts.call':'Llamar','contacts.navigate':'Navegar',
+    'contacts.emergency':'Números de emergencia · España',
+    'contacts.ec1':'Sistema de emergencias integrado','contacts.ec2':'Policía Nacional',
+    'contacts.ec3':'Bomberos','contacts.ec4':'Ambulancia',
+    'gallery.label':'Fotos','gallery.h2':'Galería','gallery.script':'ambiente, luz, bienestar',
+    'gallery.tab.all':'Todo','gallery.tab.apt':'Apartamento','gallery.tab.garden':'Jardín','gallery.tab.complex':'Complejo',
+    'footer.p1':'ONE80 Suites · Avenida del Fuego 50 · 29693 Estepona · Málaga, España',
+    'footer.p2':'creado con amor para nuestros huéspedes',
+    'modal.h':'Guía de estancia','modal.sub':'todo paso a paso',
+    'modal.phase1':'Antes del viaje','modal.phase2':'Tras la llegada','modal.phase3':'Durante la estancia','modal.phase4':'Antes de salir',
+  }
+};
+
+let currentLang = localStorage.getItem('lang') || 'cs';
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('lang', lang);
+  document.documentElement.lang = lang;
+  const t = LANG_DATA[lang];
+  // text content
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  // inner HTML (for elements with tags like <br>)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18nHtml;
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+  // update lang buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+  });
+}
+
+// init on load
+setLang(currentLang);
 </script>
-<div style="text-align:center;padding:6px 0 10px;font-size:11px;color:#bbb;letter-spacing:.08em;font-family:monospace">v1.5 · 2026-06-19</div>
+<div style="text-align:center;padding:6px 0 10px;font-size:11px;color:#bbb;letter-spacing:.08em;font-family:monospace">v1.9 · 2026-06-20</div>
 </body>
 </html>
